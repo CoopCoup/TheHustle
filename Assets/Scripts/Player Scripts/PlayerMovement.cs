@@ -8,6 +8,8 @@ public class PlayerMovement : MonoBehaviour
     //create our variables
     private Rigidbody2D rb;
     private Vector2 inputVector;
+    private float inputX;
+    private float inputY;
     private Vector2 recentInput;
     private Animator animator;
     [SerializeField] private float moveSpeed;
@@ -38,13 +40,15 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         MovePlayer();
-        Debug.Log(direction);
+        //Debug.Log(direction);
     }
 
     //Unity Event for the player's input
     public void OnMove(InputAction.CallbackContext context)
     {
         inputVector = context.ReadValue<Vector2>();
+        inputX = Mathf.RoundToInt(inputVector.x);
+        inputY = Mathf.RoundToInt(inputVector.y);
     }
 
     // Move the player and set the animator bool parameter so that they animate
@@ -54,6 +58,7 @@ public class PlayerMovement : MonoBehaviour
         if (inputVector != Vector2.zero)
         {
             animator.SetBool("IsMoving", true);
+            Debug.Log(direction);
         }
         else animator.SetBool("IsMoving", false);
         CheckPlayerFacing();
@@ -69,7 +74,7 @@ public class PlayerMovement : MonoBehaviour
             isDiagonal = true;
             #region Diagonal Direction Switch Statement
             //switch to get the players direction and set it in an enum
-            switch (inputVector.x)
+            switch (inputX)
             {
                 case 1:
                     if (inputVector.y > 0)
@@ -97,7 +102,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-        /*#region Cardinal Direction Switch Statement
+        #region Cardinal Direction Switch Statement
         //switch to get the players direction and set it in an enum
         switch (inputVector.x)
         {
@@ -129,7 +134,7 @@ public class PlayerMovement : MonoBehaviour
                 break;
 
         }
-            #endregion*/
+            #endregion
 
         }
     }
