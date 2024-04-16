@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,13 +8,13 @@ public class PlayerMovement : MonoBehaviour
 {
     //create our variables
     private Rigidbody2D rb;
+    private SpriteRenderer spriteRen;
     private Vector2 inputVector;
     private float inputX;
-    private float inputY;
-    private Vector2 recentInput;
     private Animator animator;
     [SerializeField] private float moveSpeed;
-    private bool isDiagonal;
+    private bool isRight;
+    private bool isFiring;
 
     // Enum of player directions to use in the animator
     public Direction direction;
@@ -27,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        spriteRen = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();    
     }
 
@@ -34,13 +36,14 @@ public class PlayerMovement : MonoBehaviour
     {
         //Set the initial direction the player is facing
         direction = Direction.Right;
+        inputX = 1;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         MovePlayer();
-        //Debug.Log(direction);
+        AnimatePlayer();
     }
 
     //Unity Event for the player's input
@@ -48,30 +51,39 @@ public class PlayerMovement : MonoBehaviour
     {
         inputVector = context.ReadValue<Vector2>();
         inputX = Mathf.RoundToInt(inputVector.x);
-        inputY = Mathf.RoundToInt(inputVector.y);
     }
+
+    //Unity Event for the player' firing input
+    public void OnFire(InputAction.CallbackContext context)
+    {
+        isFiring = true;
+        Debug.Log("Fired!");
+    }
+
 
     // Move the player and set the animator bool parameter so that they animate
     private void MovePlayer()
     {
         rb.velocity = inputVector * moveSpeed;
-        if (inputVector != Vector2.zero)
-        {
-            animator.SetBool("IsMoving", true);
-            Debug.Log(direction);
-        }
-        else animator.SetBool("IsMoving", false);
         CheckPlayerFacing();
     }
 
     //check which direction the player is facing
     private void CheckPlayerFacing()
     {
+        //Get whether the player is facing left or right
+        if (inputX > 0)
+        {
+            isRight = true;
+        }
+        else if (inputX < 0)
+        {
+            isRight = false;
+        }
 
         // if the player is moving diagonally
         if ((inputVector.x != 0) & (inputVector.y != 0))
         {
-            isDiagonal = true;
             #region Diagonal Direction Switch Statement
             //switch to get the players direction and set it in an enum
             switch (inputX)
@@ -102,7 +114,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-        #region Cardinal Direction Switch Statement
+            #region Cardinal Direction Switch Statement
         //switch to get the players direction and set it in an enum
         switch (inputVector.x)
         {
@@ -138,4 +150,26 @@ public class PlayerMovement : MonoBehaviour
 
         }
     }
+
+    //animate the player
+    private void AnimatePlayer()
+    {
+        if (!isRight)
+        {
+            spriteRen.flipX = true;
+        }
+        else spriteRen.flipX = false;
+
+        //set movement animator bool
+        if (inputVector != Vector2.zero)
+        {
+            animator.SetBool("IsMoving", true);
+            Debug.Log(direction);
+        }
+        else animator.SetBool("IsMoving", false);
+        
+        //REMEMBER! When the firing point game object is added, remember to flip it here along with the player sprite 
+    }
+
+    
 }
