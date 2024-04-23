@@ -14,8 +14,21 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
     [SerializeField] private float moveSpeed;
     private bool isRight;
-    private bool isFiring;
+    private bool canFire = true;
+    [SerializeField] private GameObject firingPoint;
 
+    //Create Firing Delay Co-routine
+    IEnumerator coFire()
+    {
+        canFire = false;
+       
+        yield return new WaitForSeconds(.5f);
+        canFire = true;
+        animator.SetBool("IsFiring", false);
+    }
+
+    
+    
     // Enum of player directions to use in the animator
     public Direction direction;
     public enum Direction
@@ -56,8 +69,31 @@ public class PlayerMovement : MonoBehaviour
     //Unity Event for the player' firing input
     public void OnFire(InputAction.CallbackContext context)
     {
-        isFiring = true;
-        Debug.Log("Fired!");
+        if (canFire)
+        {
+            animator.SetBool("IsFiring", true);
+            //  Get which direction the player is facing to spawn the projectile correctly
+            switch (direction)
+            {
+                case Direction.Left:
+                    firingPoint.transform.position = new Vector3(-0.5f, 0.282f, 0); break;
+                case Direction.Right:
+                    firingPoint.transform.position = new Vector3(0.5f, 0.282f, 0); break;
+                case Direction.Up:
+                    firingPoint.transform.position = new Vector3(0.1565f, 0.6768f, 0); break;
+                case Direction.Down:
+                    firingPoint.transform.position = new Vector3(0.16f, -0.261f, 0); break;
+                case Direction.UpRight:
+                    firingPoint.transform.position = new Vector3(0.4895f, 0.6768f, 0); break;
+                case Direction.UpLeft:
+                    firingPoint.transform.position = new Vector3(-0.4895f, 0.6768f, 0); break;
+                case Direction.DownRight:
+                    firingPoint.transform.position = new Vector3(0.429f, -0.179f, 0); break;
+                case Direction.DownLeft:
+                    firingPoint.transform.position = new Vector3(-0.429f, -0.179f, 0); break;
+            }
+            StartCoroutine(coFire());
+        }
     }
 
 
@@ -164,7 +200,6 @@ public class PlayerMovement : MonoBehaviour
         if (inputVector != Vector2.zero)
         {
             animator.SetBool("IsMoving", true);
-            Debug.Log(direction);
         }
         else animator.SetBool("IsMoving", false);
         
