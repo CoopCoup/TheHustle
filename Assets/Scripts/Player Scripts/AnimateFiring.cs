@@ -41,21 +41,21 @@ public class AnimateFiring : StateMachineBehaviour
         switch (playerScript.direction)
         {
             case PlayerMovement.Direction.Right:
-                animator.PlayInFixedTime("PlayerFiring", -1, 0); break;
+                animator.PlayInFixedTime("PlayerFiring", 0, 0); break;
             case PlayerMovement.Direction.Up:
-                animator.PlayInFixedTime("PlayerFiring", -1, 0.75f); break;
+                animator.PlayInFixedTime("PlayerFiring", 0, 0.75f); break;
             case PlayerMovement.Direction.Down:
-                animator.PlayInFixedTime("PlayerFiring", -1, 1); break;
+                animator.PlayInFixedTime("PlayerFiring", 0, 1); break;
             case PlayerMovement.Direction.UpRight:
-                animator.PlayInFixedTime("PlayerFiring", -1, 0.5f); break;
+                animator.PlayInFixedTime("PlayerFiring", 0, 0.5f); break;
             case PlayerMovement.Direction.DownRight:
-                animator.PlayInFixedTime("PlayerFiring", -1, 0.25f); break;
+                animator.PlayInFixedTime("PlayerFiring", 0, 0.25f); break;
             case PlayerMovement.Direction.Left:
-                animator.PlayInFixedTime("PlayerFiring", -1, 0); break;
+                animator.PlayInFixedTime("PlayerFiring", 0, 0); break;
             case PlayerMovement.Direction.UpLeft:
-                animator.PlayInFixedTime("PlayerFiring", -1, 0.5f); break;
+                animator.PlayInFixedTime("PlayerFiring", 0, 0.5f); break;
             case PlayerMovement.Direction.DownLeft:
-                animator.PlayInFixedTime("PlayerFiring", -1, 0.25f); break;
+                animator.PlayInFixedTime("PlayerFiring", 0, 0.25f); break;
         }
         
         
