@@ -8,25 +8,35 @@ public class PlayerMovement : MonoBehaviour
 {
     //create our variables
     private Rigidbody2D rb;
-    private SpriteRenderer spriteRen;
+    public SpriteRenderer spriteRen;
     private Vector2 inputVector;
     private float inputX;
     private Animator animator;
     [SerializeField] private float moveSpeed;
     private bool isRight;
     private bool canFire = true;
+    private bool canMove = true;
+    private bool isDead = false;
     [SerializeField] private GameObject firingPoint;
 
     //Create Firing Delay Co-routine
     IEnumerator coFire()
     {
         canFire = false;
-       
-        yield return new WaitForSeconds(.5f);
-        canFire = true;
+        yield return new WaitForSeconds(.25f);
         animator.SetBool("IsFiring", false);
+        if (!isDead)
+        {
+            canMove = true;
+        }
+        
     }
 
+    IEnumerator coFireCooldown()
+    {
+        yield return new WaitForSeconds(.5f);
+        canFire = true;
+    }
     
     
     // Enum of player directions to use in the animator
@@ -57,13 +67,14 @@ public class PlayerMovement : MonoBehaviour
     {
         MovePlayer();
         AnimatePlayer();
+
     }
 
     //Unity Event for the player's input
     public void OnMove(InputAction.CallbackContext context)
     {
-        inputVector = context.ReadValue<Vector2>();
-        inputX = Mathf.RoundToInt(inputVector.x);
+            inputVector = context.ReadValue<Vector2>();
+            inputX = Mathf.RoundToInt(inputVector.x);
     }
 
     //Unity Event for the player' firing input
@@ -71,28 +82,40 @@ public class PlayerMovement : MonoBehaviour
     {
         if (canFire)
         {
+            canMove = false;
+            StopPlayer();
             animator.SetBool("IsFiring", true);
+            
             //  Get which direction the player is facing to spawn the projectile correctly
             switch (direction)
             {
                 case Direction.Left:
+                    animator.Play("PlayerFiringRight");
                     firingPoint.transform.position = new Vector3(-0.5f, 0.282f, 0); break;
                 case Direction.Right:
+                    animator.Play("PlayerFiringRight");
                     firingPoint.transform.position = new Vector3(0.5f, 0.282f, 0); break;
                 case Direction.Up:
+                    animator.Play("PlayerFiringUp");
                     firingPoint.transform.position = new Vector3(0.1565f, 0.6768f, 0); break;
                 case Direction.Down:
+                    animator.Play("PlayerFiringDown");
                     firingPoint.transform.position = new Vector3(0.16f, -0.261f, 0); break;
                 case Direction.UpRight:
+                    animator.Play("PlayerFiringUpRight");
                     firingPoint.transform.position = new Vector3(0.4895f, 0.6768f, 0); break;
                 case Direction.UpLeft:
+                    animator.Play("PlayerFiringUpRight");
                     firingPoint.transform.position = new Vector3(-0.4895f, 0.6768f, 0); break;
                 case Direction.DownRight:
+                    animator.Play("PlayerFiringDownRight");
                     firingPoint.transform.position = new Vector3(0.429f, -0.179f, 0); break;
                 case Direction.DownLeft:
+                    animator.Play("PlayerFiringDownRight");
                     firingPoint.transform.position = new Vector3(-0.429f, -0.179f, 0); break;
             }
             StartCoroutine(coFire());
+            StartCoroutine(coFireCooldown());
         }
     }
 
@@ -100,8 +123,17 @@ public class PlayerMovement : MonoBehaviour
     // Move the player and set the animator bool parameter so that they animate
     private void MovePlayer()
     {
-        rb.velocity = inputVector * moveSpeed;
-        CheckPlayerFacing();
+        if (canMove)
+        {
+            rb.velocity = inputVector * moveSpeed;
+            CheckPlayerFacing();
+        }
+        
+    }
+
+    private void StopPlayer()
+    {
+        rb.velocity = Vector2.zero;
     }
 
     //check which direction the player is facing

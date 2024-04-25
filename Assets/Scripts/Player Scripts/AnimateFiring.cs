@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEditor.Build;
 using UnityEngine;
 
 public class AnimateFiring : StateMachineBehaviour
 {
+    public Sprite upSprite, upRightSprite, rightSprite, downRightSprite, downSprite;
+
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     //{
@@ -38,24 +41,26 @@ public class AnimateFiring : StateMachineBehaviour
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         PlayerMovement playerScript = animator.GetComponent<PlayerMovement>();
+        
         switch (playerScript.direction)
         {
             case PlayerMovement.Direction.Right:
-                animator.PlayInFixedTime("PlayerFiring", 0, 0); break;
+                playerScript.spriteRen.sprite = rightSprite; break; 
             case PlayerMovement.Direction.Up:
-                animator.PlayInFixedTime("PlayerFiring", 0, 0.75f); break;
+                playerScript.spriteRen.sprite = upSprite;
+                UnityEngine.Debug.Log("checking"); break;
             case PlayerMovement.Direction.Down:
-                animator.PlayInFixedTime("PlayerFiring", 0, 1); break;
+                playerScript.spriteRen.sprite = downSprite; break;
             case PlayerMovement.Direction.UpRight:
-                animator.PlayInFixedTime("PlayerFiring", 0, 0.5f); break;
+                playerScript.spriteRen.sprite = upRightSprite; break;
             case PlayerMovement.Direction.DownRight:
-                animator.PlayInFixedTime("PlayerFiring", 0, 0.25f); break;
+                playerScript.spriteRen.sprite = downRightSprite; break;
             case PlayerMovement.Direction.Left:
-                animator.PlayInFixedTime("PlayerFiring", 0, 0); break;
+                playerScript.spriteRen.sprite = rightSprite; break;
             case PlayerMovement.Direction.UpLeft:
-                animator.PlayInFixedTime("PlayerFiring", 0, 0.5f); break;
+                playerScript.spriteRen.sprite = upRightSprite; break;
             case PlayerMovement.Direction.DownLeft:
-                animator.PlayInFixedTime("PlayerFiring", 0, 0.25f); break;
+                playerScript.spriteRen.sprite = downRightSprite; break;
         }
         
         

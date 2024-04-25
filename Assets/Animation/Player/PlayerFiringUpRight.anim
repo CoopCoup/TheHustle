@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PlayerFiring
+  m_Name: PlayerFiringUpRight
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,15 +21,7 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: -948449632, guid: b26a4f9cc6bba464ab6bc1f939bf810f, type: 3}
-    - time: 0.083333336
-      value: {fileID: 951912597, guid: b26a4f9cc6bba464ab6bc1f939bf810f, type: 3}
-    - time: 0.16666667
       value: {fileID: -1038994519, guid: b26a4f9cc6bba464ab6bc1f939bf810f, type: 3}
-    - time: 0.25
-      value: {fileID: -651277856, guid: b26a4f9cc6bba464ab6bc1f939bf810f, type: 3}
-    - time: 0.33333334
-      value: {fileID: 378027475, guid: b26a4f9cc6bba464ab6bc1f939bf810f, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -52,17 +44,13 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: -948449632, guid: b26a4f9cc6bba464ab6bc1f939bf810f, type: 3}
-    - {fileID: 951912597, guid: b26a4f9cc6bba464ab6bc1f939bf810f, type: 3}
     - {fileID: -1038994519, guid: b26a4f9cc6bba464ab6bc1f939bf810f, type: 3}
-    - {fileID: -651277856, guid: b26a4f9cc6bba464ab6bc1f939bf810f, type: 3}
-    - {fileID: 378027475, guid: b26a4f9cc6bba464ab6bc1f939bf810f, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.41666666
+    m_StopTime: 0.083333336
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
