@@ -351,7 +351,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 947326163}
-  - component: {fileID: 947326162}
   - component: {fileID: 947326161}
   - component: {fileID: 947326160}
   - component: {fileID: 947326164}
@@ -378,6 +377,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 2
   firingPoint: {fileID: 1863182578}
+  bulletPrefab: {fileID: 8770130155656899397, guid: 60545304804423641a44ebfe93a26f08, type: 3}
+  upFiringPoint: {x: 0.1565, y: 0.692, z: 0}
+  flippedUpFiringPoint: {x: -0.1565, y: 0.692, z: 0}
+  upRightFiringPoint: {x: 0.4328, y: 0.6157, z: 0}
+  rightFiringPoint: {x: 0.5, y: 0.282, z: 0}
+  downRightFiringPoint: {x: 0.3634, y: -0.112, z: 0}
+  downFiringPoint: {x: 0.1571, y: -0.2628, z: 0}
+  flippedDownFiringPoint: {x: -0.1571, y: -0.2628, z: 0}
+  downLeftFiringPoint: {x: -0.3634, y: -0.112, z: 0}
+  leftFiringPoint: {x: -0.5, y: 0.282, z: 0}
+  upLeftFiringPoint: {x: -0.4328, y: 0.6157, z: 0}
   direction: 2
 --- !u!50 &947326161
 Rigidbody2D:
@@ -406,41 +416,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
---- !u!58 &947326162
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 947326159}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.5
 --- !u!4 &947326163
 Transform:
   m_ObjectHideFlags: 0
@@ -449,7 +424,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 947326159}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.12, y: 1.26, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -616,7 +591,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1863182578}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0.282, z: 0}
+  m_LocalPosition: {x: 0.4328, y: 0.6157, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

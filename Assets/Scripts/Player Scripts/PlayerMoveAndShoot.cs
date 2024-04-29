@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
 {
     //create our variables
     private Rigidbody2D rb;
-    public SpriteRenderer spriteRen;
+    private SpriteRenderer spriteRen;
     private Vector2 inputVector;
     private float inputX;
     private Animator animator;
@@ -18,13 +18,30 @@ public class PlayerMovement : MonoBehaviour
     private bool canMove = true;
     private bool isDead = false;
     [SerializeField] private GameObject firingPoint;
+    [SerializeField] private GameObject bulletPrefab;
+
+    [SerializeField] private Vector3 upFiringPoint; 
+    [SerializeField] private Vector3 flippedUpFiringPoint; 
+    [SerializeField] private Vector3 upRightFiringPoint; 
+    [SerializeField] private Vector3 rightFiringPoint; 
+    [SerializeField] private Vector3 downRightFiringPoint; 
+    [SerializeField] private Vector3 downFiringPoint;
+    [SerializeField] private Vector3 flippedDownFiringPoint;
+    [SerializeField] private Vector3 downLeftFiringPoint;
+    [SerializeField] private Vector3 leftFiringPoint;
+    [SerializeField] private Vector3 upLeftFiringPoint;
+
 
     //Create Firing Delay Co-routine
     IEnumerator coFire()
     {
         canFire = false;
+        GameObject newBullet = Instantiate(bulletPrefab);
+        BulletScript bulletLogic = newBullet.GetComponent<BulletScript>();
+        bulletLogic.Instantiate(direction, firingPoint.transform.position);
         yield return new WaitForSeconds(.25f);
         animator.SetBool("IsFiring", false);
+
         if (!isDead)
         {
             canMove = true;
@@ -91,28 +108,42 @@ public class PlayerMovement : MonoBehaviour
             {
                 case Direction.Left:
                     animator.Play("PlayerFiringRight");
-                    firingPoint.transform.position = new Vector3(-0.5f, 0.282f, 0); break;
+                    firingPoint.transform.position = transform.position + leftFiringPoint; break;
                 case Direction.Right:
                     animator.Play("PlayerFiringRight");
-                    firingPoint.transform.position = new Vector3(0.5f, 0.282f, 0); break;
+                    firingPoint.transform.position = transform.position + rightFiringPoint; break;
                 case Direction.Up:
                     animator.Play("PlayerFiringUp");
-                    firingPoint.transform.position = new Vector3(0.1565f, 0.6768f, 0); break;
+                    if (spriteRen.flipX)
+                    {
+                        firingPoint.transform.position = transform.position + flippedUpFiringPoint; break;
+                    }
+                    else
+                    {
+                        firingPoint.transform.position = transform.position + upFiringPoint; break;
+                    }
                 case Direction.Down:
                     animator.Play("PlayerFiringDown");
-                    firingPoint.transform.position = new Vector3(0.16f, -0.261f, 0); break;
+                    if (spriteRen.flipX)
+                    {
+                        firingPoint.transform.position = transform.position + flippedDownFiringPoint; break;
+                    }
+                    else
+                    {
+                        firingPoint.transform.position = transform.position + downFiringPoint; break;
+                    }
                 case Direction.UpRight:
                     animator.Play("PlayerFiringUpRight");
-                    firingPoint.transform.position = new Vector3(0.4895f, 0.6768f, 0); break;
+                    firingPoint.transform.position = transform.position + upRightFiringPoint; break;
                 case Direction.UpLeft:
                     animator.Play("PlayerFiringUpRight");
-                    firingPoint.transform.position = new Vector3(-0.4895f, 0.6768f, 0); break;
+                    firingPoint.transform.position = transform.position + upLeftFiringPoint; break;
                 case Direction.DownRight:
                     animator.Play("PlayerFiringDownRight");
-                    firingPoint.transform.position = new Vector3(0.429f, -0.179f, 0); break;
+                    firingPoint.transform.position = transform.position + downRightFiringPoint; break;
                 case Direction.DownLeft:
                     animator.Play("PlayerFiringDownRight");
-                    firingPoint.transform.position = new Vector3(-0.429f, -0.179f, 0); break;
+                    firingPoint.transform.position = transform.position + downLeftFiringPoint; break;
             }
             StartCoroutine(coFire());
             StartCoroutine(coFireCooldown());

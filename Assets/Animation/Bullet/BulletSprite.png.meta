@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c60d8e6c1ca282c458f2f1860eb12150
+guid: 767ffc2c4f853e4429ce2d7aa32ddce6
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -106,32 +106,6 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -150,8 +124,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 083d9a88818cbcf4f8d7b2c0db856daa
-      internalID: 2024905462
+      spriteID: 81fccd7b6668c3c42ac4728e9abd600d
+      internalID: 744067517
       vertices: []
       indices: 
       edges: []
@@ -171,8 +145,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 83fc732de22c83b42b9b5dccdf7c33bc
-      internalID: -1838277983
+      spriteID: 22af2984a153c754fbb69afbc9bd80f8
+      internalID: -1685147377
       vertices: []
       indices: 
       edges: []
@@ -192,8 +166,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a47fc480fe37db04c8afd91df9d70c55
-      internalID: 705136030
+      spriteID: 8b7812f81ecacb74396c2192b43e8650
+      internalID: 848980405
       vertices: []
       indices: 
       edges: []
@@ -213,8 +187,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c6e334f7805699c48a2a86d1df2cd2a9
-      internalID: 1712945185
+      spriteID: 52128b10652e9774395362cc5ffff033
+      internalID: 106210573
       vertices: []
       indices: 
       edges: []
@@ -234,8 +208,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dc9cc3283bbcbdf4598e6994f7ff5a25
-      internalID: -77873756
+      spriteID: dd35bd155d41cf84bbe9ec3851f826c6
+      internalID: -861081202
       vertices: []
       indices: 
       edges: []
@@ -255,8 +229,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 39b3f5160090a7d458bfdd6658889ce0
-      internalID: -2055117389
+      spriteID: 93fdfe53a0a99504fa6db4edeb8499e5
+      internalID: -263125854
       vertices: []
       indices: 
       edges: []
@@ -276,8 +250,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5dfbc3e7e4f2e6d4484d56efe35d77a1
-      internalID: 1215034645
+      spriteID: acbc159f70212b54e8221a71f1ac408e
+      internalID: -365839652
       vertices: []
       indices: 
       edges: []
@@ -297,8 +271,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 541dab2bacdbbf245be8b98f2fd02a73
-      internalID: 1451021248
+      spriteID: 437b182a3ad5d6144be165ba332dfaec
+      internalID: -1381914608
       vertices: []
       indices: 
       edges: []
@@ -314,14 +288,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      BulletSprite_0: 2024905462
-      BulletSprite_1: -1838277983
-      BulletSprite_2: 705136030
-      BulletSprite_3: 1712945185
-      BulletSprite_4: -77873756
-      BulletSprite_5: -2055117389
-      BulletSprite_6: 1215034645
-      BulletSprite_7: 1451021248
+      BulletSprite_0: 744067517
+      BulletSprite_1: -1685147377
+      BulletSprite_2: 848980405
+      BulletSprite_3: 106210573
+      BulletSprite_4: -861081202
+      BulletSprite_5: -263125854
+      BulletSprite_6: -365839652
+      BulletSprite_7: -1381914608
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
