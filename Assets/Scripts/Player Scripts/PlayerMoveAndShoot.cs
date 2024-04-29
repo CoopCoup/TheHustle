@@ -228,7 +228,10 @@ public class PlayerMovement : MonoBehaviour
                 }
                 if (inputVector.y == 0)
                 {
-                    direction = Direction.Right;
+                    if (spriteRen.flipX)
+                        {
+                            direction = Direction.Left;
+                        } else { direction = Direction.Right; }
                 }
                 break;
             case 1:

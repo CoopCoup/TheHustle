@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-public class BulletScript : MonoBehaviour
+public class BulletScript : MonoBehaviour, IColliders
 {
     //Saving the rotation of the collision for each orientation of the bullet
     [SerializeField] private Vector3 rightUpColRot;
@@ -81,7 +81,7 @@ public class BulletScript : MonoBehaviour
     //Function to fire the bullet
     private void FireBullet()
     {
-        rb.velocity = bulletAim * bulletSpeed;
+        rb.velocity = bulletAim.normalized * bulletSpeed;
     }
 
 
@@ -96,8 +96,22 @@ public class BulletScript : MonoBehaviour
         }
     }
 
+    //Destroy the bullet if it leaves the screen
+    private void OnBecameInvisible()
+    {
+        if (!spriteRen.isVisible)
+        {
+            Destroy(gameObject);
+        }
+    }
 
+    //Implement Interface fucntion
+    public void OnHit(GameObject otherObject, float damage)
+    {
+        //what happens when the thing gets hit
+        GameObject hitter = otherObject;
 
+    }
 
 
 
