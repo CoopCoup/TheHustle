@@ -105,7 +105,7 @@ public class BulletScript : MonoBehaviour, IColliders
         }
     }
 
-    //Implement Interface fucntion
+    //Implement Interface function
     public void OnHit(GameObject otherObject, float damage)
     {
         //what happens when the thing gets hit
