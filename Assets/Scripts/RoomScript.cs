@@ -16,6 +16,7 @@ public class RoomScript : MonoBehaviour
     public GameObject upExitSeal;
     public GameObject downExitSeal;
 
+    private int exitInt;
     
     //Create an enum for the different exits so that the room manager has an easier time communicating which exit to seal off (or vice versa)
     public RoomExits roomExits;
@@ -34,6 +35,7 @@ public class RoomScript : MonoBehaviour
     public void Initialise(RoomManager manager)
     {
         roomManager = manager;
+
     }
 
     // Update is called once per frame
@@ -73,23 +75,29 @@ public class RoomScript : MonoBehaviour
     {
        if (exit == leftExit)
         {
-            Debug.Log("Left Exit Reached");
+            exitInt = 4;
+            roomManager.ExitReached(exitInt);
         }
 
         if (exit == rightExit)
         {
-            Debug.Log("Right Exit Reached");
+            exitInt = 2;
+            roomManager.ExitReached(exitInt);
         }
 
         if (exit == upExit)
         {
-            Debug.Log("Up Exit Reached");
+            exitInt = 1;
+            roomManager.ExitReached(exitInt);
         }
 
         if (exit == downExit)
         {
-            Debug.Log("Down Exit Reached");
+            exitInt = 3;
+            roomManager.ExitReached(exitInt);
         }
+
+        
     }
     
     
