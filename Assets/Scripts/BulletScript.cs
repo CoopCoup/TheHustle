@@ -106,11 +106,20 @@ public class BulletScript : MonoBehaviour, IColliders
     }
 
     //Implement Interface function
-    public void OnHit(GameObject otherObject, float damage)
+    public void OnHit(GameObject otherObject)
     {
         //what happens when the thing gets hit
         GameObject hitter = otherObject;
+    }
 
+    //Collision
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "Wall")
+        {
+            Debug.Log("Wall hit");
+            Destroy(gameObject);
+        }
     }
 
 
