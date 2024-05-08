@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IColliders
 {
-    void OnHit(GameObject otherObject);
+    void Hit();
 }

@@ -37,41 +37,49 @@ public class BulletScript : MonoBehaviour, IColliders
             case PlayerMovement.Direction.Up:
                 bulletAim = new Vector2(0, 1);
                 spriteRen.sprite = sprites[0];
+                bulletCol.transform.rotation = Quaternion.Euler(upColRot);
                 break;
 
             case PlayerMovement.Direction.Right:
                 bulletAim = new Vector2(1, 0);
                 spriteRen.sprite = sprites[1];
+                bulletCol.transform.rotation = Quaternion.Euler(rightColRot);
                 break;
 
             case PlayerMovement.Direction.Down:
                 bulletAim = new Vector2(0, -1);
                 spriteRen.sprite = sprites[0];
+                bulletCol.transform.rotation = Quaternion.Euler(upColRot);
                 break;
 
             case PlayerMovement.Direction.Left:
                 bulletAim = new Vector2(-1, 0);
                 spriteRen.sprite = sprites[1];
+                bulletCol.transform.rotation = Quaternion.Euler(rightColRot);
                 break;
 
             case PlayerMovement.Direction.UpRight:
                 bulletAim = new Vector2(1, 1);
                 spriteRen.sprite = sprites[2];
+                bulletCol.transform.rotation = Quaternion.Euler(rightUpColRot);
                 break;
 
             case PlayerMovement.Direction.UpLeft:
                 bulletAim = new Vector2(-1, 1);
                 spriteRen.sprite = sprites[3];
+                bulletCol.transform.rotation = Quaternion.Euler(rightDownColRot);
                 break;
 
             case PlayerMovement.Direction.DownRight:
                 bulletAim = new Vector2(1, -1);
                 spriteRen.sprite = sprites[3];
+                bulletCol.transform.rotation = Quaternion.Euler(rightDownColRot);
                 break;
 
             case PlayerMovement.Direction.DownLeft:
                 bulletAim = new Vector2(-1, -1);
                 spriteRen.sprite = sprites[2];
+                bulletCol.transform.rotation = Quaternion.Euler(rightUpColRot);
                 break;
 
         }
@@ -106,20 +114,23 @@ public class BulletScript : MonoBehaviour, IColliders
     }
 
     //Implement Interface function
-    public void OnHit(GameObject otherObject)
+    public void Hit()
     {
-        //what happens when the thing gets hit
-        GameObject hitter = otherObject;
+        Destroy(this.gameObject);
     }
 
     //Collision
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "Wall")
+        if (other.tag == "Enemy")
         {
-            Debug.Log("Wall hit");
-            Destroy(gameObject);
+            IColliders i = other.GetComponent<IColliders>();
+            if (i != null)
+            {
+                i.Hit();
+            }
         }
+        Destroy(this.gameObject);
     }
 
 
