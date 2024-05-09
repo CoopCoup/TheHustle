@@ -6,6 +6,7 @@ using UnityEngine;
 public class RoomScript : MonoBehaviour
 {
     private RoomManager roomManager;
+    private Transform playerRef;
     public GameObject leftExit;
     public GameObject rightExit;
     public GameObject upExit;
@@ -32,9 +33,10 @@ public class RoomScript : MonoBehaviour
     }
 
     //Function to get a reference to the room manager to set up a communication, I'm fine with these being dependent on one another as the two have completely shared functionalities
-    public void Initialise(RoomManager manager)
+    public void Initialise(RoomManager manager, Transform player)
     {
         roomManager = manager;
+        playerRef = player;
 
     }
 

@@ -44,6 +44,7 @@ public class RoomManager : MonoBehaviour
    private void SpawnPlayer()
     {
         player = Instantiate(playerPrefab, spawnPoints[spawnInt].transform.position, Quaternion.identity);
+        currentRoom.Initialise(this, player.transform);
     }
 
 
@@ -63,7 +64,7 @@ public class RoomManager : MonoBehaviour
         }
 
         //play the transition animation and spawn the player
-        StartCoroutine(ETransitionAnim(firstRoom));
+        StartCoroutine(CTransitionAnim(firstRoom));
     }
     
 
@@ -90,7 +91,7 @@ public class RoomManager : MonoBehaviour
         //Give the current Room prefab a reference to the room manager so that they can communicate
         if (currentRoom != null)
         {
-            currentRoom.Initialise(this);
+            
         }
         else
         {
@@ -148,7 +149,7 @@ public class RoomManager : MonoBehaviour
     
     
     //coroutine that destroys the player so no funny business can go down while the transit is happening, plays the transition, then spawns the player in the correct spot
-    IEnumerator ETransitionAnim(bool firstRoom)
+    IEnumerator CTransitionAnim(bool firstRoom)
     {
        if (player != null)
         {
