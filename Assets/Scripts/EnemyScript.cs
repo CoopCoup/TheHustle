@@ -15,6 +15,8 @@ public class EnemyScript : MonoBehaviour, IColliders
     private bool playerInSight = false;
     private bool canFire = true;
 
+    public int health;
+
     // Define Vectors in the 8 directions 
     private Vector2 up = Vector2.up;
     private Vector2 down = Vector2.down;
@@ -32,34 +34,21 @@ public class EnemyScript : MonoBehaviour, IColliders
         yield return new WaitForSeconds(1f);
         canFire = true;
     }
-    
-
-    IEnumerator CTestTimer()
-    {
-        //DELETE WHEN DONE!
-        yield return new WaitForSeconds(5f);
-        GameObject playerInstance = GameObject.FindGameObjectWithTag("Player");
-        player = playerInstance.transform;
-        playerInSight = true;
-    }
 
     
     //Initialise the enemy in the room script, passing it a reference to the player
-    public void Initialise(Transform playerRef)
+    public void Initialise(Transform playerRef, int EnemyToughness)
     {
         player = playerRef;
         playerInSight = true;
+        health = EnemyToughness; 
     }
     
     // Start is called before the first frame update
     void Start()
     {
-        //TEMPORARY - HAVE A REF TO THE PLAYER TO TEST IF EVERYTHING WORKS
-        StartCoroutine(CTestTimer());
-
         //Create a layer mask so the enemies debug traces dont collide with the enemy itself
         raycastLayerMask = LayerMask.GetMask("Default", "Player");
-
     }
 
     //Implement Interface function
@@ -101,7 +90,6 @@ public class EnemyScript : MonoBehaviour, IColliders
     //SHOOTING fucntionality
     private void Shoot(Vector2 direction)
     {
-        Debug.Log("I SEE YOU");
         GameObject bulletInstance = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
         EnemyBulletScript bulletRef = bulletInstance.GetComponent<EnemyBulletScript>();
         bulletRef.Initialise(direction);
