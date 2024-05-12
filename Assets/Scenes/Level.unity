@@ -288,7 +288,7 @@ GameObject:
   - component: {fileID: 258501949}
   - component: {fileID: 258501950}
   - component: {fileID: 258501951}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Dummy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -349,6 +349,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 233ce5c2a8662d34db29c8fb272cd036, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bulletPrefab: {fileID: 1940138091739083979, guid: 4bed67439817d2b4dbd4010d2f7db608, type: 3}
+  sightRange: 100
 --- !u!212 &258501950
 SpriteRenderer:
   m_ObjectHideFlags: 0

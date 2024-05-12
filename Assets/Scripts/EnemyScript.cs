@@ -7,14 +7,12 @@ using UnityEngine;
 public class EnemyScript : MonoBehaviour, IColliders
 {
     public GameObject bulletPrefab;
-    public Transform firePoint;
     private Transform player;
+    private LayerMask raycastLayerMask;
+    
 
-    //TEMPORARY - HAVE A REF TO THE PLAYER TO TEST IF EVERYTHING WORKS
-
-    [SerializeField] private float sightRange = 50f;
+    [SerializeField] private float sightRange = 100f;
     private bool playerInSight = false;
-    private float fireDelay = 0.6f;
     private bool canFire = true;
 
     // Define Vectors in the 8 directions 
@@ -31,21 +29,37 @@ public class EnemyScript : MonoBehaviour, IColliders
     IEnumerator CShootCooldown()
     {
         canFire = false;
-        yield return new WaitForSeconds(fireDelay);
+        yield return new WaitForSeconds(1f);
         canFire = true;
     }
     
+
+    IEnumerator CTestTimer()
+    {
+        //DELETE WHEN DONE!
+        yield return new WaitForSeconds(5f);
+        GameObject playerInstance = GameObject.FindGameObjectWithTag("Player");
+        player = playerInstance.transform;
+        playerInSight = true;
+    }
+
     
     //Initialise the enemy in the room script, passing it a reference to the player
     public void Initialise(Transform playerRef)
     {
         player = playerRef;
+        playerInSight = true;
     }
     
     // Start is called before the first frame update
     void Start()
     {
-        
+        //TEMPORARY - HAVE A REF TO THE PLAYER TO TEST IF EVERYTHING WORKS
+        StartCoroutine(CTestTimer());
+
+        //Create a layer mask so the enemies debug traces dont collide with the enemy itself
+        raycastLayerMask = LayerMask.GetMask("Default", "Player");
+
     }
 
     //Implement Interface function
@@ -56,20 +70,28 @@ public class EnemyScript : MonoBehaviour, IColliders
 
     //check where the player is, if the player is in one of the lines of sight fire at the payer
     private void CheckLineOfSight()
-    {        
+    {
         Vector2 direction = player.position - transform.position;
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, sightRange);
-        if (hit.collider != null && hit.collider.CompareTag("Player"))
+
+        // Define the firing lines
+        Vector2[] firingLines = { up, upRight, right, downRight, down, downLeft, left, upLeft };
+
+        // Perform raycasts for each firing line
+        foreach (Vector2 line in firingLines)
         {
-            //Check if player is within the lines of fire
-            Vector2[] firingLines = { up, upRight, right, downRight, down, downLeft, left, upLeft };
-            foreach (Vector2 line in firingLines)
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, line, sightRange, raycastLayerMask);
+            Debug.Log(hit.rigidbody);
+            // Check if the raycast hits the player's collider
+            if (hit.collider != null && hit.collider.CompareTag("Player"))
             {
-                hit = Physics2D.Raycast(transform.position, line, sightRange);
-                if (hit.collider != null && hit.collider.CompareTag("Player"))
+                if (canFire)
                 {
-                    Shoot(direction);
+                    Shoot(direction.normalized);
+                    StartCoroutine(CShootCooldown());
+                    return;
                 }
+                
+                return; // Exit the loop if player is hit
             }
         }
 
@@ -80,20 +102,18 @@ public class EnemyScript : MonoBehaviour, IColliders
     private void Shoot(Vector2 direction)
     {
         Debug.Log("I SEE YOU");
+        GameObject bulletInstance = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+        EnemyBulletScript bulletRef = bulletInstance.GetComponent<EnemyBulletScript>();
+        bulletRef.Initialise(direction);
     }
-    
-    
-    
-    
-    private void FixedUpdate()
-    {
-        
-    }
-
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (playerInSight)
+        {
+            CheckLineOfSight();
+        }
+            
     }
 }
