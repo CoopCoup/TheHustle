@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyScript : MonoBehaviour, IColliders
@@ -15,7 +16,7 @@ public class EnemyScript : MonoBehaviour, IColliders
     private bool playerInSight = false;
     private bool canFire = true;
 
-    public int health;
+    public int health = 1;
 
     // Define Vectors in the 8 directions 
     private Vector2 up = Vector2.up;
@@ -35,13 +36,25 @@ public class EnemyScript : MonoBehaviour, IColliders
         canFire = true;
     }
 
-    
+    IEnumerator CSpawnCooldown()
+    {
+        canFire = false;
+        yield return new WaitForSeconds(2f);
+        canFire = true;
+    }
+
+
     //Initialise the enemy in the room script, passing it a reference to the player
-    public void Initialise(Transform playerRef, int EnemyToughness)
+    public void Initialise(Transform playerRef, int difficultyValue)
     {
         player = playerRef;
         playerInSight = true;
-        health = EnemyToughness; 
+        
+        //Scale the enemy's health with the game's difficulty
+        if (difficultyValue >= 13)
+        {
+            health = 2;
+        }
     }
     
     // Start is called before the first frame update
@@ -49,12 +62,18 @@ public class EnemyScript : MonoBehaviour, IColliders
     {
         //Create a layer mask so the enemies debug traces dont collide with the enemy itself
         raycastLayerMask = LayerMask.GetMask("Default", "Player");
+        StartCoroutine(CSpawnCooldown());
     }
 
     //Implement Interface function
     public void Hit()
     {
-        Debug.Log("Enemy Hit!");
+        health--;
+        if (health <= 0)
+        {
+            //Play dying animation
+            Destroy(gameObject);
+        }
     }
 
     //check where the player is, if the player is in one of the lines of sight fire at the payer
@@ -69,7 +88,6 @@ public class EnemyScript : MonoBehaviour, IColliders
         foreach (Vector2 line in firingLines)
         {
             RaycastHit2D hit = Physics2D.Raycast(transform.position, line, sightRange, raycastLayerMask);
-            Debug.Log(hit.rigidbody);
             // Check if the raycast hits the player's collider
             if (hit.collider != null && hit.collider.CompareTag("Player"))
             {
@@ -98,10 +116,7 @@ public class EnemyScript : MonoBehaviour, IColliders
     // Update is called once per frame
     void Update()
     {
-        if (playerInSight)
-        {
-            CheckLineOfSight();
-        }
+        CheckLineOfSight();
             
     }
 }

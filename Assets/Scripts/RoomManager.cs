@@ -23,9 +23,8 @@ public class RoomManager : MonoBehaviour
     public GameObject playerPrefab;
     private GameObject player;
 
-
-
-
+    //Increase the difficulty value each time you enter a new room. 
+    private int difficultyValue = 2;
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------
     // Start is called before the first frame update
@@ -44,7 +43,7 @@ public class RoomManager : MonoBehaviour
    private void SpawnPlayer()
     {
         player = Instantiate(playerPrefab, spawnPoints[spawnInt].transform.position, Quaternion.identity);
-        currentRoom.Initialise(this, player.transform);
+        currentRoom.Initialise(this, player.transform, difficultyValue);
     }
 
 
@@ -60,6 +59,7 @@ public class RoomManager : MonoBehaviour
         else
         {
             //IMPORTANT - SWITCH THIS OUT FOR RANDOM ROOM FUCNTION WHEN ITS MADE
+            difficultyValue++;
             NewRoom(1, firstRoom);
         }
 
