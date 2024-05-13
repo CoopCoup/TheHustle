@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3999315541935165462}
   - component: {fileID: 3997632317126756805}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BulletCollision
   m_TagString: Bullet
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 4472744065723236274}
   - component: {fileID: 7499685055141326941}
   - component: {fileID: 1224360147817580201}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bullet
   m_TagString: Bullet
   m_Icon: {fileID: 0}

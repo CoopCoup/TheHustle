@@ -13,8 +13,13 @@ public class EnemyScript : MonoBehaviour, IColliders
     
 
     [SerializeField] private float sightRange = 100f;
-    private bool playerInSight = false;
+
     private bool canFire = true;
+    private bool canWander = true;
+
+    private Vector2 randomDestination;
+    [SerializeField] private float moveSpeed = .5f;
+    [SerializeField] private float wanderRadius = 10f;
 
     public int health = 1;
 
@@ -29,11 +34,26 @@ public class EnemyScript : MonoBehaviour, IColliders
     private Vector2 upLeft = new Vector2(-1, 1).normalized;
 
     
+    IEnumerator CDie()
+    {
+        canFire = false;
+        canFire = false;
+        //Play death animation
+        yield return new WaitForSeconds(1f);
+    }
+    
     IEnumerator CShootCooldown()
     {
         canFire = false;
         yield return new WaitForSeconds(1f);
         canFire = true;
+    }
+
+    IEnumerator CPauseWander()
+    {
+        canWander = false;
+        yield return new WaitForSeconds(.5f);
+        canWander = true;
     }
 
     IEnumerator CSpawnCooldown()
@@ -48,7 +68,6 @@ public class EnemyScript : MonoBehaviour, IColliders
     public void Initialise(Transform playerRef, int difficultyValue)
     {
         player = playerRef;
-        playerInSight = true;
         
         //Scale the enemy's health with the game's difficulty
         if (difficultyValue >= 13)
@@ -57,24 +76,66 @@ public class EnemyScript : MonoBehaviour, IColliders
         }
     }
     
+    //Make the enemy wander in a random direction while not firing
+    private void SetRandomDestination()
+    {
+        //Find a random destination in a set wander radius
+        randomDestination = (Vector2)transform.position + Random.insideUnitCircle * wanderRadius;
+
+        //Check if there's a wall in the way
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, randomDestination - (Vector2)transform.position, wanderRadius, raycastLayerMask);
+        if (hit.collider != null)
+        {
+            //If the destination is blocked, pick a new place to go
+            randomDestination = hit.point;
+        }
+
+    }
+
+    //Simple function that makes the enemy pick a destination and sets the wandering bool so that they move on Update
+    private void StartWandering()
+    {
+        SetRandomDestination();
+        canWander = true;
+    }
+
+
     // Start is called before the first frame update
     void Start()
     {
         //Create a layer mask so the enemies debug traces dont collide with the enemy itself
         raycastLayerMask = LayerMask.GetMask("Default", "Player");
         StartCoroutine(CSpawnCooldown());
+        StartWandering();
     }
 
     //Implement Interface function
     public void Hit()
     {
         health--;
+        //ADD A HIT FLASH HERE --------------------------------------------------------------------------------------
         if (health <= 0)
         {
             //Play dying animation
-            Destroy(gameObject);
+            StopAllCoroutines();
+            StartCoroutine(CDie());
         }
     }
+
+    //If enemy bumps into player
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "Player")
+        {
+            IColliders i = other.GetComponent<IColliders>();
+            if (i != null)
+            {
+                i.Hit();
+            }
+        }
+    }
+
+
 
     //check where the player is, if the player is in one of the lines of sight fire at the payer
     private void CheckLineOfSight()
@@ -95,6 +156,7 @@ public class EnemyScript : MonoBehaviour, IColliders
                 {
                     Shoot(direction.normalized);
                     StartCoroutine(CShootCooldown());
+                    StartCoroutine(CPauseWander());
                     return;
                 }
                 
@@ -117,6 +179,23 @@ public class EnemyScript : MonoBehaviour, IColliders
     void Update()
     {
         CheckLineOfSight();
-            
+        if (canWander)
+        {
+            // Move towards the random destination
+            transform.position = Vector2.MoveTowards(transform.position, randomDestination, moveSpeed * Time.deltaTime);
+
+            // Check if the enemy has reached the destination
+            if (Vector2.Distance(transform.position, randomDestination) < 2f)
+            {
+                // Choose a new random destination
+                SetRandomDestination();
+            }
+        }
+
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        SetRandomDestination();
     }
 }

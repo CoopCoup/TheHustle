@@ -53,7 +53,6 @@ public class RoomScript : MonoBehaviour
     {
         foreach (GameObject enemySpawn in enemySpawns)
         {
-            Debug.Log(difficultyInt);
             if (difficultyInt > 0)
             {
                 GameObject enemyInstance = Instantiate(enemyPrefab, enemySpawn.transform.position, Quaternion.identity);

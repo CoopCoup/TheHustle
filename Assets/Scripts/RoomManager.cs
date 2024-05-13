@@ -114,28 +114,24 @@ public class RoomManager : MonoBehaviour
         switch (exit)
         {
             case 1:
-                Debug.Log("Up Exit Reached");
                 lastExit = RoomScript.RoomExits.up;
                 exitToSeal = RoomScript.RoomExits.down;
                 spawnInt = 3;
                 break;
 
             case 2:
-                Debug.Log("Right Exit Reached");
                 lastExit = RoomScript.RoomExits.right;
                 exitToSeal = RoomScript.RoomExits.left;
                 spawnInt = 4;
                 break;
 
             case 3:
-                Debug.Log("Down Exit Reached");
                 lastExit = RoomScript.RoomExits.down;
                 exitToSeal = RoomScript.RoomExits.up;
                 spawnInt = 1;
                 break;
 
             case 4:
-                Debug.Log("Left Exit Reached");
                 lastExit = RoomScript.RoomExits.left;
                 exitToSeal = RoomScript.RoomExits.right;
                 spawnInt = 2;
