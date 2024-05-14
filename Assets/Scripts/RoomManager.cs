@@ -24,7 +24,7 @@ public class RoomManager : MonoBehaviour
     private GameObject player;
 
     //Increase the difficulty value each time you enter a new room. 
-    private int difficultyValue = 2;
+    private int difficultyValue = 1;
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------
     // Start is called before the first frame update

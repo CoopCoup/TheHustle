@@ -9,13 +9,23 @@ public class EnemyScript : MonoBehaviour, IColliders
 {
     public GameObject bulletPrefab;
     private Transform player;
+    private Animator animator;
+    private Collider2D lilCollider;
+    private SpriteRenderer spriteRen;
+    private Rigidbody2D rb;
     private LayerMask raycastLayerMask;
-    
+
+
+    //coroutine variables to make sure theyre null when the enemy gets killed
+    private Coroutine shootCoroutine;
+    private Coroutine wanderCoroutine;
+    private Coroutine spawnCoroutine;
 
     [SerializeField] private float sightRange = 100f;
 
     private bool canFire = true;
     private bool canWander = true;
+    private bool isDead = false;
 
     private Vector2 randomDestination;
     [SerializeField] private float moveSpeed = .5f;
@@ -33,13 +43,20 @@ public class EnemyScript : MonoBehaviour, IColliders
     private Vector2 downLeft = new Vector2(-1, -1).normalized;
     private Vector2 upLeft = new Vector2(-1, 1).normalized;
 
-    
-    IEnumerator CDie()
+    //make the enemy flash red when they get hit
+    IEnumerator CHitEffect()
     {
-        canFire = false;
-        canFire = false;
-        //Play death animation
-        yield return new WaitForSeconds(1f);
+        spriteRen.color = Color.red;
+        yield return new WaitForSeconds(.25f);
+        spriteRen.color = Color.white;
+    }
+
+
+    //Actually properly just die
+    IEnumerator CActuallyDie()
+    {
+        yield return new WaitForSeconds(5f);
+        Destroy(gameObject);
     }
     
     IEnumerator CShootCooldown()
@@ -103,24 +120,59 @@ public class EnemyScript : MonoBehaviour, IColliders
     // Start is called before the first frame update
     void Start()
     {
+        rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        lilCollider = GetComponent<Collider2D>();
+        spriteRen = GetComponent<SpriteRenderer>();
         //Create a layer mask so the enemies debug traces dont collide with the enemy itself
         raycastLayerMask = LayerMask.GetMask("Default", "Player");
-        StartCoroutine(CSpawnCooldown());
+        spawnCoroutine = StartCoroutine(CSpawnCooldown());
         StartWandering();
     }
 
     //Implement Interface function
     public void Hit()
     {
-        health--;
-        //ADD A HIT FLASH HERE --------------------------------------------------------------------------------------
-        if (health <= 0)
+        StartCoroutine(CHitEffect());
+        if (!isDead)
         {
-            //Play dying animation
-            StopAllCoroutines();
-            StartCoroutine(CDie());
+            health--;
+            //ADD A HIT FLASH HERE --------------------------------------------------------------------------------------
+            if (health <= 0)
+            {
+                //Play dying animation
+                if (spawnCoroutine != null)
+                {
+                    StopCoroutine(spawnCoroutine);
+                }
+                if (wanderCoroutine != null)
+                {
+                    StopCoroutine(wanderCoroutine);
+                }
+                if (shootCoroutine != null)
+                {
+                    StopCoroutine(shootCoroutine);
+                }
+                Death();
+            }
         }
+        
     }
+
+    //Make sure the enemy can't do anything or be hit, then animate the death
+    private void Death()
+    {
+        isDead = true;
+        canFire = false;
+        canWander = false;
+        animator.SetBool("IsDead", true);
+        Destroy(rb);
+        Destroy(lilCollider);
+        StartCoroutine(CActuallyDie());
+    }
+
+
+
 
     //If enemy bumps into player
     private void OnTriggerEnter2D(Collider2D other)
@@ -155,8 +207,8 @@ public class EnemyScript : MonoBehaviour, IColliders
                 if (canFire)
                 {
                     Shoot(direction.normalized);
-                    StartCoroutine(CShootCooldown());
-                    StartCoroutine(CPauseWander());
+                    shootCoroutine = StartCoroutine(CShootCooldown());
+                    wanderCoroutine = StartCoroutine(CPauseWander());
                     return;
                 }
                 
