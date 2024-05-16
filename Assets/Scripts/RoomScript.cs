@@ -57,7 +57,7 @@ public class RoomScript : MonoBehaviour
             {
                 GameObject enemyInstance = Instantiate(enemyPrefab, enemySpawn.transform.position, Quaternion.identity);
                 EnemyScript enemyScript = enemyInstance.GetComponent<EnemyScript>();
-                enemyScript.Initialise(playerRef, difficultyValue);
+                enemyScript.Initialise(playerRef, difficultyValue, this);
                 enemyInstances.Add(enemyInstance);
                 difficultyInt--;
             }
@@ -66,7 +66,12 @@ public class RoomScript : MonoBehaviour
         }
     }
     
-    
+    public void EnemyDeath()
+    {
+
+    }
+
+
     // Update is called once per frame
     void Update()
     {

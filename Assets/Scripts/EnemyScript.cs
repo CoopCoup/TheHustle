@@ -15,6 +15,8 @@ public class EnemyScript : MonoBehaviour, IColliders
     private Rigidbody2D rb;
     private LayerMask raycastLayerMask;
 
+    private RoomScript room;
+
 
     //coroutine variables to make sure theyre null when the enemy gets killed
     private Coroutine shootCoroutine;
@@ -82,10 +84,10 @@ public class EnemyScript : MonoBehaviour, IColliders
 
 
     //Initialise the enemy in the room script, passing it a reference to the player
-    public void Initialise(Transform playerRef, int difficultyValue)
+    public void Initialise(Transform playerRef, int difficultyValue, RoomScript roomRef)
     {
         player = playerRef;
-        
+        room = roomRef;
         //Scale the enemy's health with the game's difficulty
         if (difficultyValue >= 13)
         {
