@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class BulletScript : MonoBehaviour, IColliders
 {
+    
     //Saving the rotation of the collision for each orientation of the bullet
     [SerializeField] private Vector3 rightUpColRot;
     [SerializeField] private Vector3 rightDownColRot;   

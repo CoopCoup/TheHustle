@@ -17,6 +17,9 @@ public class EnemyScript : MonoBehaviour, IColliders
 
     private RoomScript room;
 
+    //How much score this enemy is worth
+    [SerializeField] private int scoreValue;
+
 
     //coroutine variables to make sure theyre null when the enemy gets killed
     private Coroutine shootCoroutine;
@@ -89,9 +92,17 @@ public class EnemyScript : MonoBehaviour, IColliders
         player = playerRef;
         room = roomRef;
         //Scale the enemy's health with the game's difficulty
-        if (difficultyValue >= 13)
+        if (difficultyValue >= 7)
         {
-            health = 2;
+            int healthBoostChance = Random.Range(0, 3);
+            if (healthBoostChance == 1)
+            {
+                health = 2;
+            }
+            else
+            {
+                health = 1;
+            }
         }
     }
     
@@ -138,7 +149,7 @@ public class EnemyScript : MonoBehaviour, IColliders
         StartCoroutine(CHitEffect());
         if (!isDead)
         {
-            health--;
+            health --;
             //ADD A HIT FLASH HERE --------------------------------------------------------------------------------------
             if (health <= 0)
             {
@@ -170,6 +181,7 @@ public class EnemyScript : MonoBehaviour, IColliders
         animator.SetBool("IsDead", true);
         Destroy(rb);
         Destroy(lilCollider);
+        room.EnemyDeath(scoreValue);
         StartCoroutine(CActuallyDie());
     }
 

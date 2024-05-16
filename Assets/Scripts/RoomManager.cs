@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,13 @@ public class RoomManager : MonoBehaviour
     //Get a reference to the current room
     public GameObject[] roomPrefabs;
     private RoomScript currentRoom;
+
+    // Player/Game mode variables
+    private int playerLives;
+    public GameObject UIManager;
+    private UIManager UIRef;
+
+
 
     //the last exit the player touched
     private RoomScript.RoomExits lastExit;
@@ -33,6 +41,7 @@ public class RoomManager : MonoBehaviour
     {
         spawnInt = 0;
 
+        UIRef = UIManager.GetComponent<UIManager>();
         TransitionRoom(true);
         
     }
@@ -43,6 +52,8 @@ public class RoomManager : MonoBehaviour
    private void SpawnPlayer()
     {
         player = Instantiate(playerPrefab, spawnPoints[spawnInt].transform.position, Quaternion.identity);
+        PlayerMovement playerScript = player.GetComponent<PlayerMovement>();
+        playerScript.GetManagerRef(this);
         currentRoom.Initialise(this, player.transform, difficultyValue);
     }
 
@@ -109,8 +120,14 @@ public class RoomManager : MonoBehaviour
 
 
 
-    public void ExitReached(int exit)
-    {   
+    public void ExitReached(int exit, bool addCombo)
+    {
+        //if the player didnt clear all the enemies last room, clear their combo when entering the new one
+        if (!addCombo)
+        {
+            UpdateCombo(false);
+        }
+
         switch (exit)
         {
             case 1:
@@ -141,7 +158,22 @@ public class RoomManager : MonoBehaviour
         TransitionRoom(false);
     }
 
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //METHODS FOR UPDATING UI
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
+    //MetHod called when the player kills every enemy on the screen or just generally increases their combo
+    public void UpdateCombo(bool addCombo)
+    {
+        UIRef.UpdateUI(0, true, addCombo, playerLives);
+    }
+
+    //Method called when the player gains score (through either killing an enemy or getting a pickup)
+    public void UpdateScore(int scoreGained)
+    {
+        UIRef.UpdateUI(scoreGained, false, false, playerLives);
+    }
+
     
     
     //coroutine that destroys the player so no funny business can go down while the transit is happening, plays the transition, then spawns the player in the correct spot
@@ -180,13 +212,6 @@ public class RoomManager : MonoBehaviour
 
         yield return new WaitForSeconds(1);
         SpawnPlayer();
-        
-    }
-
-
-    // Update is called once per frame
-    void Update()
-    {
         
     }
 }

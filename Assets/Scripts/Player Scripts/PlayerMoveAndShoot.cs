@@ -12,6 +12,9 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 inputVector;
     private float inputX;
     private Animator animator;
+
+    private RoomManager roomManager;
+
     [SerializeField] private float moveSpeed;
     private bool isRight;
     private bool canFire = true;
@@ -71,6 +74,13 @@ public class PlayerMovement : MonoBehaviour
         spriteRen = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();    
     }
+
+    //get a ref to the room manager script in order to tell it to update score when the player collects a pickup
+    public void GetManagerRef(RoomManager roomManagerRef)
+    {
+        roomManager = roomManagerRef;
+    }
+
 
     private void Start()
     {

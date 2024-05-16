@@ -13,6 +13,9 @@ public class RoomScript : MonoBehaviour
     public GameObject upExit;
     public GameObject downExit;
 
+    private bool addCombo = false;
+    private int enemiesKilled = 0;
+
     public GameObject leftExitSeal;
     public GameObject rightExitSeal;
     public GameObject upExitSeal;
@@ -34,7 +37,7 @@ public class RoomScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+    
     }
 
     //Function to get a reference to the room manager to set up a communication, I'm fine with these being dependent on one another as the two have completely shared functionalities
@@ -66,11 +69,18 @@ public class RoomScript : MonoBehaviour
         }
     }
     
-    public void EnemyDeath()
+    public void EnemyDeath(int enemyScoreValue)
     {
+        roomManager.UpdateScore(enemyScoreValue);
+        enemiesKilled++;
+        //check to see if the player has cleared the room, and if so add a combo
+        if (enemiesKilled >= enemyInstances.Count)
+        {
+            addCombo = true;
+            roomManager.UpdateCombo(addCombo);
+        }
 
     }
-
 
     // Update is called once per frame
     void Update()
@@ -116,25 +126,25 @@ public class RoomScript : MonoBehaviour
         if (exit == leftExit)
         {
             exitInt = 4;
-            roomManager.ExitReached(exitInt);
+            roomManager.ExitReached(exitInt, addCombo);
         }
 
         if (exit == rightExit)
         {
             exitInt = 2;
-            roomManager.ExitReached(exitInt);
+            roomManager.ExitReached(exitInt, addCombo);
         }
 
         if (exit == upExit)
         {
             exitInt = 1;
-            roomManager.ExitReached(exitInt);
+            roomManager.ExitReached(exitInt, addCombo);
         }
 
         if (exit == downExit)
         {
             exitInt = 3;
-            roomManager.ExitReached(exitInt);
+            roomManager.ExitReached(exitInt, addCombo);
         }
 
         

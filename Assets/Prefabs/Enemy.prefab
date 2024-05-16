@@ -77,9 +77,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 1940138091739083979, guid: 4bed67439817d2b4dbd4010d2f7db608, type: 3}
+  scoreValue: 50
   sightRange: 100
-  moveSpeed: 0.5
-  wanderRadius: 5
+  moveSpeed: 1
+  wanderRadius: 3
   health: 1
 --- !u!212 &7185534573736416945
 SpriteRenderer:
