@@ -15,7 +15,8 @@ public class RoomManager : MonoBehaviour
     public GameObject UIManager;
     private UIManager UIRef;
 
-
+    //variable to see whether we're in the menus / attract mode or in the actual game loop
+    private bool gameTime = false;
 
     //the last exit the player touched
     private RoomScript.RoomExits lastExit;
@@ -30,6 +31,7 @@ public class RoomManager : MonoBehaviour
     //player reference to spawn them in
     public GameObject playerPrefab;
     private GameObject player;
+    private PlayerMovement playerScript;
 
     //Increase the difficulty value each time you enter a new room. 
     private int difficultyValue = 1;
@@ -39,20 +41,26 @@ public class RoomManager : MonoBehaviour
     //-----------------------------------------------------------------------------------------------------------------------------------------------
     void Start()
     {
-        spawnInt = 0;
-
+        
         UIRef = UIManager.GetComponent<UIManager>();
-        TransitionRoom(true);
+        
         
     }
 
+    //start the game
+    private void StartGame()
+    {
+        gameTime = true;
+        spawnInt = 0;
 
+        TransitionRoom(true);
+    }
 
     //Spawns the player. duh
    private void SpawnPlayer()
     {
         player = Instantiate(playerPrefab, spawnPoints[spawnInt].transform.position, Quaternion.identity);
-        PlayerMovement playerScript = player.GetComponent<PlayerMovement>();
+        playerScript = player.GetComponent<PlayerMovement>();
         playerScript.GetManagerRef(this);
         currentRoom.Initialise(this, player.transform, difficultyValue);
     }
@@ -62,6 +70,47 @@ public class RoomManager : MonoBehaviour
     //tidy little function to organise the order that we have to run all the OTHER functions - create room, then get rid of player, then animation, then spawn player in correct spot
     private void TransitionRoom(bool firstRoom)
     {
+        //Play the transition anim
+        
+        if (!firstRoom)
+        {
+            switch (lastExit)
+            {
+                case RoomScript.RoomExits.up:
+                    //play up exit anim
+                    PlayTransition(1);
+                    break;
+
+                case RoomScript.RoomExits.right:
+                    //play right exit anim
+                    PlayTransition(2);
+                    break;
+
+                case RoomScript.RoomExits.down:
+                    //play down exit anim
+                    PlayTransition(3);
+                    break;
+
+                case RoomScript.RoomExits.left:
+                    //play left exit anim
+                    PlayTransition(4);
+                    break;
+            }
+        }
+        else
+        {
+            PlayTransition(5);
+        }
+
+
+
+
+        //destroy the player so they can't do whatever while the screen is transitioning
+        if (player != null)
+        {
+            Destroy(player);
+        }
+
         //Set the room index to be the starting room, then create the room
         if (firstRoom)
         {
@@ -73,17 +122,11 @@ public class RoomManager : MonoBehaviour
             difficultyValue++;
             NewRoom(1, firstRoom);
         }
-
-        //play the transition animation and spawn the player
-        StartCoroutine(CTransitionAnim(firstRoom));
     }
+
     
-
-    //function to get the random room prefab index will go here
-    //a random range between 1 and the length of the room prefab array to prevent the starting room from popping up 
-    //private int GetRandomRoom()
-
-    //Function to create a new room
+    
+    //Function to create a new room ---------------------------------------------------------------------------------------------
     private void NewRoom(int roomIndex, bool firstRoom)
     {
         //Destroy the current room
@@ -99,21 +142,14 @@ public class RoomManager : MonoBehaviour
         //Set the current room as the script component for the room prefab, letting us have access to the 
         currentRoom = roomPrefabInstance.GetComponent<RoomScript>();
 
-        //Give the current Room prefab a reference to the room manager so that they can communicate
-        if (currentRoom != null)
-        {
-            
-        }
-        else
-        {
-            //If this returns null there's been an error and either the room prefab doesn't exist or it doesn't have a room script on it
-            Debug.Log("No script found on this room");
-        }
-
+        //seal the exit behind the player
         if (!firstRoom)
         {
             currentRoom.SealExits(exitToSeal);
         }
+
+        //spawn the player
+        SpawnPlayer();
     }
 
 
@@ -174,44 +210,44 @@ public class RoomManager : MonoBehaviour
         UIRef.UpdateUI(scoreGained, false, false, playerLives);
     }
 
-    
-    
-    //coroutine that destroys the player so no funny business can go down while the transit is happening, plays the transition, then spawns the player in the correct spot
-    IEnumerator CTransitionAnim(bool firstRoom)
+
+    //function to play a room transition
+    public void PlayTransition(int CardinalDirection)
     {
-       if (player != null)
+        switch (CardinalDirection)
         {
-            Destroy(player);
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                //play centre transition
+                break;
         }
-
-       if (!firstRoom)
-        {
-            switch (lastExit)
-            {
-                case RoomScript.RoomExits.up:
-                    //play up exit anim
-                    break;
-
-                case RoomScript.RoomExits.right:
-                    //play right exit anim
-                    break;
-
-                case RoomScript.RoomExits.down:
-                    //play down exit anim
-                    break;
-
-                case RoomScript.RoomExits.left:
-                    //play left exit anim
-                    break;
-            }
-        }
-        else
-        {
-            //play opening anim
-        }
-
-        yield return new WaitForSeconds(1);
-        SpawnPlayer();
-        
     }
+
+    //Function triggers when the inverse animation starts
+    public void SpawnEnemiesInTransit()
+    {
+        if (gameTime)
+        {
+            currentRoom.SpawnEnemies();
+        }
+            
+    }
+
+    //Function triggers when the inverse transition anim is finished- meaning its time to enable all the enemies and player
+    public void TransitionDone()
+    {
+        if (gameTime)
+        {
+            playerScript.MumLetMePlay();
+            
+        }
+    }
+
 }

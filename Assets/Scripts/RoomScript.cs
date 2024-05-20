@@ -24,6 +24,7 @@ public class RoomScript : MonoBehaviour
     [SerializeField] private GameObject[] enemySpawns;
     private List<GameObject> enemyInstances = new List<GameObject>();
     private int difficultyInt;
+    private int difficulty;
 
     private int exitInt;
     
@@ -44,15 +45,13 @@ public class RoomScript : MonoBehaviour
     public void Initialise(RoomManager manager, Transform player, int difficultyValue)
     {
         difficultyInt = difficultyValue;
+        difficulty = difficultyValue;
         roomManager = manager;
         playerRef = player;
-        SpawnEnemies(difficultyValue);
-
-
     }
 
     //Spawn the enemies after the player is spawned
-    public void SpawnEnemies(int difficultyValue)
+    public void SpawnEnemies()
     {
         foreach (GameObject enemySpawn in enemySpawns)
         {
@@ -60,7 +59,7 @@ public class RoomScript : MonoBehaviour
             {
                 GameObject enemyInstance = Instantiate(enemyPrefab, enemySpawn.transform.position, Quaternion.identity);
                 EnemyScript enemyScript = enemyInstance.GetComponent<EnemyScript>();
-                enemyScript.Initialise(playerRef, difficultyValue, this);
+                enemyScript.Initialise(playerRef, difficulty, this);
                 enemyInstances.Add(enemyInstance);
                 difficultyInt--;
             }
@@ -109,6 +108,16 @@ public class RoomScript : MonoBehaviour
 
             case RoomScript.RoomExits.down:
                 downExitSeal.SetActive(true); break;
+        }
+    }
+
+    //function to pause all enemies
+    public void PauseEnemies()
+    {
+        foreach (GameObject enemyInstance in enemyInstances)
+        {
+            EnemyScript enemyScript = enemyInstance.GetComponent<EnemyScript>();
+            enemyScript.PauseEnemy();
         }
     }
 

@@ -129,6 +129,31 @@ public class EnemyScript : MonoBehaviour, IColliders
         canWander = true;
     }
 
+    //Stop moving and shooting
+    public void PauseEnemy()
+    {
+        canFire = false;
+        canWander = false;
+        if (spawnCoroutine != null)
+        {
+            StopCoroutine(spawnCoroutine);
+        }
+        if (wanderCoroutine != null)
+        {
+            StopCoroutine(wanderCoroutine);
+        }
+        if (shootCoroutine != null)
+        {
+            StopCoroutine(shootCoroutine);
+        }
+    }
+
+    public void ResumeEnemy()
+    {
+        spawnCoroutine = StartCoroutine(CSpawnCooldown());
+        wanderCoroutine = StartCoroutine(CPauseWander());
+    }
+
 
     // Start is called before the first frame update
     void Start()

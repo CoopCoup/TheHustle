@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     //create our variables
     private Rigidbody2D rb;
     private SpriteRenderer spriteRen;
+    private Collider2D collider;
     private Vector2 inputVector;
     private float inputX;
     private Animator animator;
@@ -17,11 +18,15 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private float moveSpeed;
     private bool isRight;
-    private bool canFire = true;
-    private bool canMove = true;
+    private bool canFire = false;
+    private bool canMove = false;
     private bool isDead = false;
     [SerializeField] private GameObject firingPoint;
     [SerializeField] private GameObject bulletPrefab;
+
+    //coroutine variables to check
+    private Coroutine fireCoroutine;
+    private Coroutine fireCooldownCoroutine;
 
     [SerializeField] private Vector3 upFiringPoint; 
     [SerializeField] private Vector3 flippedUpFiringPoint; 
@@ -73,6 +78,7 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         spriteRen = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();    
+        collider = GetComponent<Collider2D>();
     }
 
     //get a ref to the room manager script in order to tell it to update score when the player collects a pickup
@@ -96,6 +102,35 @@ public class PlayerMovement : MonoBehaviour
         AnimatePlayer();
 
     }
+
+    //Room manager unpauses the player
+    public void MumLetMePlay()
+    {
+        collider.enabled = true;
+        canFire = true;
+        canMove = true;
+    }
+
+    //Room Manager pauses the player
+    public void MumSaysNo()
+    {
+        collider.enabled = false;
+        if (fireCoroutine != null)
+        {
+            StopCoroutine(fireCoroutine);
+        }
+        if (fireCooldownCoroutine != null)
+        {
+            animator.SetBool("IsFiring", false);
+            StopCoroutine(fireCooldownCoroutine);
+        }
+
+        canMove = false;
+        canFire = false;
+
+    }
+
+
 
     //Unity Event for the player's input
     public void OnMove(InputAction.CallbackContext context)
@@ -155,8 +190,8 @@ public class PlayerMovement : MonoBehaviour
                     animator.Play("PlayerFiringDownRight");
                     firingPoint.transform.position = transform.position + downLeftFiringPoint; break;
             }
-            StartCoroutine(coFire());
-            StartCoroutine(coFireCooldown());
+            fireCoroutine = StartCoroutine(coFire());
+            fireCooldownCoroutine = StartCoroutine(coFireCooldown());
         }
     }
 
