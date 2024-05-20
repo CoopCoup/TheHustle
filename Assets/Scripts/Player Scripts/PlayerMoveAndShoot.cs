@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
     //create our variables
     private Rigidbody2D rb;
     private SpriteRenderer spriteRen;
-    private Collider2D collider;
+    private Collider2D playerCol;
     private Vector2 inputVector;
     private float inputX;
     private Animator animator;
@@ -78,7 +78,7 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         spriteRen = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();    
-        collider = GetComponent<Collider2D>();
+        playerCol = GetComponent<Collider2D>();
     }
 
     //get a ref to the room manager script in order to tell it to update score when the player collects a pickup
@@ -93,6 +93,7 @@ public class PlayerMovement : MonoBehaviour
         //Set the initial direction the player is facing
         direction = Direction.Right;
         inputX = 1;
+        MumSaysNo();
     }
 
     // Update is called once per frame
@@ -106,7 +107,7 @@ public class PlayerMovement : MonoBehaviour
     //Room manager unpauses the player
     public void MumLetMePlay()
     {
-        collider.enabled = true;
+        playerCol.enabled = true;
         canFire = true;
         canMove = true;
     }
@@ -114,7 +115,7 @@ public class PlayerMovement : MonoBehaviour
     //Room Manager pauses the player
     public void MumSaysNo()
     {
-        collider.enabled = false;
+        playerCol.enabled = false;
         if (fireCoroutine != null)
         {
             StopCoroutine(fireCoroutine);
@@ -308,13 +309,14 @@ public class PlayerMovement : MonoBehaviour
         else spriteRen.flipX = false;
 
         //set movement animator bool
-        if (inputVector != Vector2.zero)
+        if (canMove)
         {
-            animator.SetBool("IsMoving", true);
+            if (inputVector != Vector2.zero)
+            {
+                animator.SetBool("IsMoving", true);
+            }
+            else animator.SetBool("IsMoving", false);
         }
-        else animator.SetBool("IsMoving", false);
-        
-        //REMEMBER! When the firing point game object is added, remember to flip it here along with the player sprite 
     }
 
     

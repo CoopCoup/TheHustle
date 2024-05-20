@@ -132,26 +132,42 @@ public class EnemyScript : MonoBehaviour, IColliders
     //Stop moving and shooting
     public void PauseEnemy()
     {
-        canFire = false;
-        canWander = false;
-        if (spawnCoroutine != null)
+        if (!isDead)
         {
-            StopCoroutine(spawnCoroutine);
-        }
-        if (wanderCoroutine != null)
-        {
-            StopCoroutine(wanderCoroutine);
-        }
-        if (shootCoroutine != null)
-        {
-            StopCoroutine(shootCoroutine);
-        }
+            if (lilCollider != null)
+            {
+                lilCollider.enabled = true;
+            }
+            canFire = false;
+            canWander = false;
+            if (spawnCoroutine != null)
+            {
+                StopCoroutine(spawnCoroutine);
+            }
+            if (wanderCoroutine != null)
+            {
+                StopCoroutine(wanderCoroutine);
+            }
+            if (shootCoroutine != null)
+            {
+                StopCoroutine(shootCoroutine);
+            }
+        } 
     }
 
     public void ResumeEnemy()
     {
-        spawnCoroutine = StartCoroutine(CSpawnCooldown());
-        wanderCoroutine = StartCoroutine(CPauseWander());
+        if (!isDead)
+        {
+            if (lilCollider != null)
+            {
+                lilCollider.enabled = true;
+            }
+            spawnCoroutine = StartCoroutine(CSpawnCooldown());
+            StartWandering();
+        }
+        
+        
     }
 
 
@@ -164,8 +180,6 @@ public class EnemyScript : MonoBehaviour, IColliders
         spriteRen = GetComponent<SpriteRenderer>();
         //Create a layer mask so the enemies debug traces dont collide with the enemy itself
         raycastLayerMask = LayerMask.GetMask("Default", "Player");
-        spawnCoroutine = StartCoroutine(CSpawnCooldown());
-        StartWandering();
     }
 
     //Implement Interface function

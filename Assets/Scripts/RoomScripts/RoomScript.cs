@@ -13,8 +13,8 @@ public class RoomScript : MonoBehaviour
     public GameObject upExit;
     public GameObject downExit;
 
-    private bool addCombo = false;
     private int enemiesKilled = 0;
+
 
     public GameObject leftExitSeal;
     public GameObject rightExitSeal;
@@ -48,6 +48,8 @@ public class RoomScript : MonoBehaviour
         difficulty = difficultyValue;
         roomManager = manager;
         playerRef = player;
+        SpawnEnemies();
+        PauseEnemies();
     }
 
     //Spawn the enemies after the player is spawned
@@ -72,12 +74,7 @@ public class RoomScript : MonoBehaviour
     {
         roomManager.UpdateScore(enemyScoreValue);
         enemiesKilled++;
-        //check to see if the player has cleared the room, and if so add a combo
-        if (enemiesKilled >= enemyInstances.Count)
-        {
-            addCombo = true;
-            roomManager.UpdateCombo(addCombo);
-        }
+        roomManager.UpdateCombo(true);
 
     }
 
@@ -116,12 +113,28 @@ public class RoomScript : MonoBehaviour
     {
         foreach (GameObject enemyInstance in enemyInstances)
         {
-            EnemyScript enemyScript = enemyInstance.GetComponent<EnemyScript>();
-            enemyScript.PauseEnemy();
+            if (enemyInstance != null)
+            {
+                EnemyScript enemyScript = enemyInstance.GetComponent<EnemyScript>();
+                enemyScript.PauseEnemy();
+            }
+
         }
     }
 
+    //Resume Enemies
+    public void ResumeEnemies()
+    {
+        foreach (GameObject enemyInstance in enemyInstances)
+        {
+            if (enemyInstance != null)
+            {
+                EnemyScript enemyScript = enemyInstance.GetComponent<EnemyScript>();
+                enemyScript.ResumeEnemy();
+            }
 
+        }
+    }
 
     //Function for when one of the exits collides with the player
     public void ExitCollided(GameObject exit)
@@ -131,29 +144,30 @@ public class RoomScript : MonoBehaviour
             Destroy(enemyInstance);
         }     
         
-        
+        //Destroy eye enemy
+
         if (exit == leftExit)
         {
             exitInt = 4;
-            roomManager.ExitReached(exitInt, addCombo);
+            roomManager.ExitReached(exitInt);
         }
 
         if (exit == rightExit)
         {
             exitInt = 2;
-            roomManager.ExitReached(exitInt, addCombo);
+            roomManager.ExitReached(exitInt);
         }
 
         if (exit == upExit)
         {
             exitInt = 1;
-            roomManager.ExitReached(exitInt, addCombo);
+            roomManager.ExitReached(exitInt);
         }
 
         if (exit == downExit)
         {
             exitInt = 3;
-            roomManager.ExitReached(exitInt, addCombo);
+            roomManager.ExitReached(exitInt);
         }
 
         

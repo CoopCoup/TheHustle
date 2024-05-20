@@ -10,19 +10,20 @@ public class UIManager : MonoBehaviour
     
     public void UpdateUI(int scoreToAdd, bool updateCombo, bool addCombo, int playerHearts)
     {
+
         if (updateCombo)
         {
             if (addCombo)
             {
                 combo++;
+                Debug.Log(combo);
             }
             else
             {
-                combo = 0;
+                combo--;
             }
-
-            Debug.Log(combo);
         }
+          
 
         if (scoreToAdd != 0)
         {
