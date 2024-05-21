@@ -14,6 +14,8 @@ public class RoomManager : MonoBehaviour
     // Player/Game mode variables
     private int playerLives = 3;
 
+    private int slotsCount = 0;
+    private bool slotsTime = false;
     public GameObject UIManager;
 
     private UIManager UIRef;
@@ -42,7 +44,7 @@ public class RoomManager : MonoBehaviour
     private PlayerMovement playerScript;
 
     //Increase the difficulty value each time you enter a new room. 
-    private int difficultyValue = 1;
+    private int difficultyValue = 2;
 
 
 
@@ -102,9 +104,18 @@ public class RoomManager : MonoBehaviour
     private void TransitionRoom(bool firstRoom)
     {
         //Play the transition anim
-        
+        //if the player has made it through three rooms without dying, they get to spin the slots
         if (!firstRoom)
         {
+            slotsCount++;
+            if (slotsCount >= 3)
+            {
+                slotsTime = true;
+                slotsCount = 0;
+                gameTime = false;
+                animator.SetBool("GameTime", false);
+                animator.SetBool("Slots", true);
+            }
             switch (lastExit)
             {
                 case RoomScript.RoomExits.up:
@@ -130,6 +141,7 @@ public class RoomManager : MonoBehaviour
         }
         else
         {
+            slotsCount = 0;
             if (currentRoom != null)
             {
                 currentRoom.ClearEnemies();
@@ -170,6 +182,7 @@ public class RoomManager : MonoBehaviour
         if (!firstRoom)
         {
             currentRoom.SealExits(exitToSeal);
+
         }
         startingRoom = false;
         //spawn the player
@@ -178,7 +191,7 @@ public class RoomManager : MonoBehaviour
     }
 
 
-
+    
 
 
     public void ExitReached(int exit)
@@ -253,7 +266,8 @@ public class RoomManager : MonoBehaviour
             {
                 currentRoom.ResumeEnemies();
             }
-            
+
+           
         }
     }
 
@@ -262,9 +276,6 @@ public class RoomManager : MonoBehaviour
     {
         if (gameTime)
         {
-
-            
-
             //destroy the player so they can't do whatever while the screen is transitioning
             if (player != null)
             {
@@ -281,6 +292,14 @@ public class RoomManager : MonoBehaviour
                 //IMPORTANT - SWITCH THIS OUT FOR RANDOM ROOM FUCNTION WHEN ITS MADE
                 difficultyValue++;
                 NewRoom(1, startingRoom);
+            }
+        }
+        else
+        {
+            if (slotsTime)
+            {
+                //Start the slots
+                StartSlots();
             }
         }
     }
@@ -308,7 +327,6 @@ public class RoomManager : MonoBehaviour
     public void PlayerHit()
     {
         playerLives--;
-        Debug.Log(playerLives);
         UIRef.UpdateUI(0, true, false, playerLives);
     }
 
@@ -381,4 +399,24 @@ public class RoomManager : MonoBehaviour
     {
 
     }
+
+
+
+
+
+
+
+
+    //-----------------------------------------------------------------------------------------------------------------------------------
+    //SLOT MACHINE LOGIC ----------------------------------------------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------------------------------------------------------------
+
+    //Start the slots
+    private void StartSlots()
+    {
+
+    }
+
+
+    
 }

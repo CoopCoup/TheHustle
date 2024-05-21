@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
+using Unity.Burst.Intrinsics;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class HUDScript : MonoBehaviour
 {
@@ -8,10 +11,12 @@ public class HUDScript : MonoBehaviour
     [SerializeField] private GameObject heart2;
     [SerializeField] private GameObject heart3;
 
+    [SerializeField] private TMPro.TextMeshProUGUI scoreCombo;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        scoreCombo.text = "0  X0";
     }
 
 
@@ -55,6 +60,8 @@ public class HUDScript : MonoBehaviour
                 heart3Ren.enabled = true;
                 break;
         }
+        
+        scoreCombo.text = score.ToString() + "  X" + combo.ToString();
     }
 
 

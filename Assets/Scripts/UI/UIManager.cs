@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-
+    private int comboCount = 0;
     private int combo = 0;
     private int score = 0;
     [SerializeField] GameObject HUDRef;
@@ -18,12 +18,18 @@ public class UIManager : MonoBehaviour
         {
             if (addCombo)
             {
-                combo++;
-                Debug.Log(combo);
+                comboCount++;
+                if (comboCount >= 3)
+                {
+                    combo++;
+                    comboCount = 0;
+                }
+                    
             }
             else
             {
-                combo--;
+                score = (score * combo);
+                combo = 0;
             }
         }
           
@@ -31,10 +37,10 @@ public class UIManager : MonoBehaviour
         if (scoreToAdd != 0)
         {
             score += scoreToAdd;
-            Debug.Log(score);
         }
 
         HUD.UpdateHUD(playerLives, score, combo);
+        
     }
 
 
@@ -42,6 +48,8 @@ public class UIManager : MonoBehaviour
     {
 
     }
+
+    
 
 
     // Start is called before the first frame update
