@@ -47,6 +47,9 @@ TagManager:
   - name: Player
     uniqueID: 2501386629
     locked: 0
+  - name: HUD
+    uniqueID: 4001010869
+    locked: 0
   - name: Transitions
     uniqueID: 3785415297
     locked: 0

@@ -7,8 +7,11 @@ public class UIManager : MonoBehaviour
 
     private int combo = 0;
     private int score = 0;
+    [SerializeField] GameObject HUDRef;
+    private HUDScript HUD;
+
     
-    public void UpdateUI(int scoreToAdd, bool updateCombo, bool addCombo, int playerHearts)
+    public void UpdateUI(int scoreToAdd, bool updateCombo, bool addCombo, int playerLives)
     {
 
         if (updateCombo)
@@ -30,12 +33,21 @@ public class UIManager : MonoBehaviour
             score += scoreToAdd;
             Debug.Log(score);
         }
+
+        HUD.UpdateHUD(playerLives, score, combo);
     }
+
+
+    public void ResetHearts()
+    {
+
+    }
+
 
     // Start is called before the first frame update
     void Start()
     {
-
+        HUD = HUDRef.GetComponent<HUDScript>();
     }
 
     // Update is called once per frame

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class RoomManager : MonoBehaviour
@@ -11,8 +12,10 @@ public class RoomManager : MonoBehaviour
     private RoomScript currentRoom;
 
     // Player/Game mode variables
-    private int playerLives;
+    private int playerLives = 3;
+
     public GameObject UIManager;
+
     private UIManager UIRef;
 
     //reference to animator and sprite renderer
@@ -40,6 +43,24 @@ public class RoomManager : MonoBehaviour
 
     //Increase the difficulty value each time you enter a new room. 
     private int difficultyValue = 1;
+
+
+
+
+    //Debug coroutine for pausing player
+    //private bool playerPaused;
+    IEnumerator CDebugPause()
+    {
+        //playerPaused = true;
+        playerScript.MumSaysNo();
+        yield return new WaitForSeconds(3);
+        playerScript.MumLetMePlay();
+        //playerPaused = false;
+    }
+
+
+
+
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------
     // Start is called before the first frame update
@@ -109,6 +130,11 @@ public class RoomManager : MonoBehaviour
         }
         else
         {
+            if (currentRoom != null)
+            {
+                currentRoom.ClearEnemies();
+            }
+            spawnInt = 0;
             PlayTransition(5);
         }
 
@@ -187,22 +213,6 @@ public class RoomManager : MonoBehaviour
         TransitionRoom(false);
     }
 
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    //METHODS FOR UPDATING UI
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    
-    //MetHod called when the player kills every enemy on the screen or just generally increases their combo
-    public void UpdateCombo(bool addCombo)
-    {
-        UIRef.UpdateUI(0, true, addCombo, playerLives);
-    }
-
-    //Method called when the player gains score (through either killing an enemy or getting a pickup)
-    public void UpdateScore(int scoreGained)
-    {
-        UIRef.UpdateUI(scoreGained, false, false, playerLives);
-    }
-
 
     //function to play a room transition
     public void PlayTransition(int CardinalDirection)
@@ -232,7 +242,6 @@ public class RoomManager : MonoBehaviour
         }
     }
 
-    //Reset the animators direction int so that the 
 
     //Function triggers when the inverse transition anim is finished- meaning its time to enable all the enemies and player
     public void TransitionDone()
@@ -276,4 +285,100 @@ public class RoomManager : MonoBehaviour
         }
     }
 
+
+
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //METHODS FOR UPDATING UI
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    //MetHod called when the player kills every enemy on the screen or just generally increases their combo
+    public void UpdateCombo(bool addCombo)
+    {
+        UIRef.UpdateUI(0, true, addCombo, playerLives);
+    }
+
+    //Method called when the player gains score (through either killing an enemy or getting a pickup)
+    public void UpdateScore(int scoreGained)
+    {
+        UIRef.UpdateUI(scoreGained, false, false, playerLives);
+    }
+
+    //method called when player dies ---------------------------------------------------------------------------------------------------------IMPORTANT
+    public void PlayerHit()
+    {
+        playerLives--;
+        Debug.Log(playerLives);
+        UIRef.UpdateUI(0, true, false, playerLives);
+    }
+
+
+
+
+
+    //Triggered after the player's death animation is done playing
+    public void Death()
+    {
+        if (playerLives <= 0)
+        {
+            GameOver();
+            ResetLevel();
+        }
+        else
+        {
+            ResetLevel();
+        }
+    }
+
+
+    private void ResetLevel()
+    {
+        difficultyValue = 2;
+        TransitionRoom(true);
+    }
+
+
+
+
+
+
+
+
+
+
+
+    private void Update()
+    {
+        //Debug logic to test the player pause works as intended
+        //if (Input.GetKey(KeyCode.E))
+        //{
+        //   if (!playerPaused)
+        //    {
+        //        StartCoroutine(CDebugPause());
+        //    }
+        //}
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //-----------------------------------------------------------------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------------------------------------------------------------
+    // GAME SCREENS, ATTRACT MODE AND MENU LOGIC PAST THIS POINT
+    //-----------------------------------------------------------------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------------------------------------------------------------
+
+    public void GameOver()
+    {
+
+    }
 }

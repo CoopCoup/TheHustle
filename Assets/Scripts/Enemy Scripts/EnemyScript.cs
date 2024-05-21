@@ -21,6 +21,8 @@ public class EnemyScript : MonoBehaviour, IColliders
     [SerializeField] private int scoreValue;
 
 
+    private List<GameObject> bullets = new List<GameObject>();
+
     //coroutine variables to make sure theyre null when the enemy gets killed
     private Coroutine shootCoroutine;
     private Coroutine wanderCoroutine;
@@ -278,6 +280,7 @@ public class EnemyScript : MonoBehaviour, IColliders
         GameObject bulletInstance = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
         EnemyBulletScript bulletRef = bulletInstance.GetComponent<EnemyBulletScript>();
         bulletRef.Initialise(direction);
+        bullets.Add(bulletInstance);
     }
 
     // Update is called once per frame
@@ -303,4 +306,19 @@ public class EnemyScript : MonoBehaviour, IColliders
     {
         SetRandomDestination();
     }
+
+
+
+    //function to delete any bullets fired by this enemy when it is deleted
+    private void OnDestroy()
+    {
+        foreach (GameObject bulletInstance in bullets)
+        {
+            if (bulletInstance != null)
+            {
+                Destroy(bulletInstance);
+            }
+        }
+    }
+
 }

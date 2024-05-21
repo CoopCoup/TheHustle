@@ -139,10 +139,7 @@ public class RoomScript : MonoBehaviour
     //Function for when one of the exits collides with the player
     public void ExitCollided(GameObject exit)
     {
-        foreach (GameObject enemyInstance in enemyInstances)
-        {
-            Destroy(enemyInstance);
-        }     
+        ClearEnemies();   
         
         //Destroy eye enemy
 
@@ -173,5 +170,12 @@ public class RoomScript : MonoBehaviour
         
     }
     
-    
+    //clear all enemies from the room
+    public void ClearEnemies()
+    {
+        foreach (GameObject enemyInstance in enemyInstances)
+        {
+            Destroy(enemyInstance);
+        }
+    }
 }

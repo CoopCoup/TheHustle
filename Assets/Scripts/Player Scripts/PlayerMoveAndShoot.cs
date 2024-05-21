@@ -4,7 +4,7 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviour, IColliders
 {
     //create our variables
     private Rigidbody2D rb;
@@ -15,6 +15,7 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
 
     private RoomManager roomManager;
+    private bool isPaused;
 
     [SerializeField] private float moveSpeed;
     private bool isRight;
@@ -104,9 +105,28 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
+    //implement interface
+    public void Hit()
+    {
+        if (!isPaused)
+        {
+            MumSaysNo();
+            roomManager.PlayerHit();
+            animator.SetBool("Hit", true);
+        }
+    }
+
+    //Done playing the death animation
+    public void Dead()
+    {
+        roomManager.Death();
+    }
+
+
     //Room manager unpauses the player
     public void MumLetMePlay()
     {
+        isPaused = false;
         playerCol.enabled = true;
         canFire = true;
         canMove = true;
@@ -115,6 +135,7 @@ public class PlayerMovement : MonoBehaviour
     //Room Manager pauses the player
     public void MumSaysNo()
     {
+        isPaused = true;
         playerCol.enabled = false;
         if (fireCoroutine != null)
         {
@@ -125,7 +146,8 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("IsFiring", false);
             StopCoroutine(fireCooldownCoroutine);
         }
-
+        rb.velocity = Vector3.zero;
+        animator.SetBool("IsMoving", false);
         canMove = false;
         canFire = false;
 
