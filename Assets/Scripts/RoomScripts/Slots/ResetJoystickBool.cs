@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TransitionOver : StateMachineBehaviour
+public class ResetJoystickBool : StateMachineBehaviour
 {
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -33,18 +33,10 @@ public class TransitionOver : StateMachineBehaviour
     //{
     //    // Implement code that sets up animation IK (inverse kinematics)
     //}
+
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.SetBool("SlotsDone", false);
-    }
-
-
-
-    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        animator.SetInteger("Direction", 0);
-        GameObject roomManager = animator.gameObject;
-        RoomManager roomManagerScript = roomManager.GetComponent<RoomManager>();
-        roomManagerScript.TransitionDone();
+        animator.SetBool("Start", false);
+        animator.SetBool("Pull", false);
     }
 }

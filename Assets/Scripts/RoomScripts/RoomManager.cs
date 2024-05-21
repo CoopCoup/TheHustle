@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 
 public class RoomManager : MonoBehaviour
 {
@@ -13,10 +15,17 @@ public class RoomManager : MonoBehaviour
 
     // Player/Game mode variables
     private int playerLives = 3;
-
+    private Vector2 inputVector;
     private int slotsCount = 0;
     private bool slotsTime = false;
     public GameObject UIManager;
+
+    //ref to the slots manager so that we know when they finish up to transition away
+    [SerializeField] GameObject slotsManager;
+    private SlotsScript slots;
+    //bool so that the slots only take the input when appropriate
+    public bool slotReadyToPull = false;
+
 
     private UIManager UIRef;
 
@@ -60,8 +69,28 @@ public class RoomManager : MonoBehaviour
         //playerPaused = false;
     }
 
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+    //Input events
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+    
+    public void OnMove(InputAction.CallbackContext context)
+    {
+        inputVector = context.ReadValue<Vector2>();
+        float inputY = Mathf.RoundToInt(inputVector.y);
+        if (slotReadyToPull)
+        {
+            if (inputY == -1)
+            {
+                slots.PullSlots();
+                slotReadyToPull = false;
+            }
+        }
+    }
 
-
+    public void SlotReadyToPull()
+    {
+        slotReadyToPull = true;
+    }
 
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -73,6 +102,8 @@ public class RoomManager : MonoBehaviour
         UIRef = UIManager.GetComponent<UIManager>();
         spriteRen = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+        slots = slotsManager.GetComponent<SlotsScript>();
+        slots.Initialise(this);
 
         //DELETE AFTER IMPLEMENTING MENU
         StartGame();
@@ -108,13 +139,12 @@ public class RoomManager : MonoBehaviour
         if (!firstRoom)
         {
             slotsCount++;
-            if (slotsCount >= 3)
+            if (slotsCount >= 1)
             {
                 slotsTime = true;
                 slotsCount = 0;
                 gameTime = false;
                 animator.SetBool("GameTime", false);
-                animator.SetBool("Slots", true);
             }
             switch (lastExit)
             {
@@ -348,6 +378,8 @@ public class RoomManager : MonoBehaviour
         }
     }
 
+    
+
 
     private void ResetLevel()
     {
@@ -359,23 +391,6 @@ public class RoomManager : MonoBehaviour
 
 
 
-
-
-
-
-
-
-    private void Update()
-    {
-        //Debug logic to test the player pause works as intended
-        //if (Input.GetKey(KeyCode.E))
-        //{
-        //   if (!playerPaused)
-        //    {
-        //        StartCoroutine(CDebugPause());
-        //    }
-        //}
-    }
 
 
 
@@ -414,9 +429,12 @@ public class RoomManager : MonoBehaviour
     //Start the slots
     private void StartSlots()
     {
-
+        slots.BeginSlots();
     }
 
+    public void SlotsDone(int score)
+    {
+        animator.SetBool("SlotsDone", true);
+    }
 
-    
 }

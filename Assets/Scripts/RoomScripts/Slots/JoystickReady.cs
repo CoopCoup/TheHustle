@@ -2,8 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TransitionOver : StateMachineBehaviour
+public class JoystickReady : StateMachineBehaviour
 {
+    private GameObject jRef;
+    private GameObject slotsRef;
+    private SlotsScript slots;
+    
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     //{
@@ -33,18 +37,15 @@ public class TransitionOver : StateMachineBehaviour
     //{
     //    // Implement code that sets up animation IK (inverse kinematics)
     //}
+
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.SetBool("SlotsDone", false);
+        
+        jRef = animator.gameObject;
+        slotsRef = jRef.transform.parent.gameObject;
+        slots = slotsRef.GetComponent<SlotsScript>();
+        slots.JoystickReady();
     }
 
 
-
-    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        animator.SetInteger("Direction", 0);
-        GameObject roomManager = animator.gameObject;
-        RoomManager roomManagerScript = roomManager.GetComponent<RoomManager>();
-        roomManagerScript.TransitionDone();
-    }
 }
