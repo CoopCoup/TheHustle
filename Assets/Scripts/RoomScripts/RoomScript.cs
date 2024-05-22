@@ -13,8 +13,6 @@ public class RoomScript : MonoBehaviour
     public GameObject upExit;
     public GameObject downExit;
 
-    private int enemiesKilled = 0;
-
 
     public GameObject leftExitSeal;
     public GameObject rightExitSeal;
@@ -22,6 +20,7 @@ public class RoomScript : MonoBehaviour
     public GameObject downExitSeal;
 
     [SerializeField] private GameObject[] enemySpawns;
+    [SerializeField] private GameObject[] slotSpawns;
     private List<GameObject> enemyInstances = new List<GameObject>();
     private int difficultyInt;
     private int difficulty;
@@ -42,13 +41,17 @@ public class RoomScript : MonoBehaviour
     }
 
     //Function to get a reference to the room manager to set up a communication, I'm fine with these being dependent on one another as the two have completely shared functionalities
-    public void Initialise(RoomManager manager, Transform player, int difficultyValue)
+    public void Initialise(RoomManager manager, Transform player, int difficultyValue, bool justPlayedSlots, int slotWinnings)
     {
         difficultyInt = difficultyValue;
         difficulty = difficultyValue;
         roomManager = manager;
         playerRef = player;
         SpawnEnemies();
+        if (justPlayedSlots)
+        {
+            SpawnSlotResults(slotWinnings);
+        }
         PauseEnemies();
     }
 
@@ -70,10 +73,33 @@ public class RoomScript : MonoBehaviour
         }
     }
     
+    //spawn the results of the last slot pull
+    private void SpawnSlotResults(int slotWinnings)
+    {
+        foreach (GameObject slotSpawn in slotSpawns)
+        {
+            if (slotWinnings > 0)
+            {
+                //Debug.Log("MoneyPickup Dropped!");
+                slotWinnings--;
+            }
+            else
+            {
+                //Debug.Log("EnemySpawned!");
+                GameObject enemyInstance = Instantiate(enemyPrefab, slotSpawn.transform.position, Quaternion.identity);
+                EnemyScript enemyScript = enemyInstance.GetComponent<EnemyScript>();
+                enemyScript.Initialise(playerRef, difficulty, this);
+                enemyInstances.Add(enemyInstance);
+            }
+        }
+    }
+
+
+
+
     public void EnemyDeath(int enemyScoreValue)
     {
         roomManager.UpdateScore(enemyScoreValue);
-        enemiesKilled++;
         roomManager.UpdateCombo(true);
 
     }

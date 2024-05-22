@@ -1,9 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
-public class ResetJoystickBool : StateMachineBehaviour
+public class PullSlots : StateMachineBehaviour
 {
+    private GameObject jRef;
+    private GameObject slotsRef;
+    private SlotsScript slots;
+
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     //{
@@ -36,8 +41,12 @@ public class ResetJoystickBool : StateMachineBehaviour
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.SetBool("Start", false);
-        animator.SetBool("Pull", false);
-        animator.SetBool("End", false);
+
+        jRef = animator.gameObject;
+        slotsRef = jRef.transform.parent.gameObject;
+        slots = slotsRef.GetComponent<SlotsScript>();
+        slots.StartSlots();
     }
+
+
 }

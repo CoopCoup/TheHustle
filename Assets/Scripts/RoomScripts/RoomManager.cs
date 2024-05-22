@@ -16,8 +16,11 @@ public class RoomManager : MonoBehaviour
     // Player/Game mode variables
     private int playerLives = 3;
     private Vector2 inputVector;
-    private int slotsCount = 0;
+    private int slotsCount = -1;
+
     private bool slotsTime = false;
+    private bool gameOver = false;
+
     public GameObject UIManager;
 
     //ref to the slots manager so that we know when they finish up to transition away
@@ -25,6 +28,9 @@ public class RoomManager : MonoBehaviour
     private SlotsScript slots;
     //bool so that the slots only take the input when appropriate
     public bool slotReadyToPull = false;
+    //Int to track the slot result punsihments/rewards
+    private int slotWinnings;
+    private bool justPlayedSlots = false;
 
 
     private UIManager UIRef;
@@ -126,7 +132,18 @@ public class RoomManager : MonoBehaviour
         player = Instantiate(playerPrefab, spawnPoints[spawnInt].transform.position, Quaternion.identity);
         playerScript = player.GetComponent<PlayerMovement>();
         playerScript.GetManagerRef(this);
-        currentRoom.Initialise(this, player.transform, difficultyValue);
+        if (justPlayedSlots)
+        {
+            currentRoom.Initialise(this, player.transform, difficultyValue, justPlayedSlots, slotWinnings);
+            Debug.Log(slotWinnings);
+            justPlayedSlots = false;
+            slotWinnings = 0;
+        }
+        else
+        {
+            currentRoom.Initialise(this, player.transform, difficultyValue, false, 0);
+        }
+        
     }
 
 
@@ -142,6 +159,7 @@ public class RoomManager : MonoBehaviour
             if (slotsCount >= 1)
             {
                 slotsTime = true;
+                justPlayedSlots = true;
                 slotsCount = 0;
                 gameTime = false;
                 animator.SetBool("GameTime", false);
@@ -384,6 +402,8 @@ public class RoomManager : MonoBehaviour
     private void ResetLevel()
     {
         difficultyValue = 2;
+        slotsCount = -1;
+        justPlayedSlots = false;
         TransitionRoom(true);
     }
 
@@ -412,7 +432,10 @@ public class RoomManager : MonoBehaviour
 
     public void GameOver()
     {
-
+        slotsTime = false;
+        gameTime = false;
+        gameOver = true;
+        animator.SetBool("GameTime", false);
     }
 
 
@@ -432,9 +455,14 @@ public class RoomManager : MonoBehaviour
         slots.BeginSlots();
     }
 
-    public void SlotsDone(int score)
+    public void SlotsDone(int winnings)
     {
         animator.SetBool("SlotsDone", true);
+        slotWinnings = winnings;
+        slotsTime = false;
+        gameTime = true;
+        animator.SetBool("GameTime", true);
+        TransitionMidway();
     }
 
 }
