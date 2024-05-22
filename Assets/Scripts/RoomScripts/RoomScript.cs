@@ -8,6 +8,10 @@ public class RoomScript : MonoBehaviour
     private RoomManager roomManager;
     private Transform playerRef;
     public GameObject enemyPrefab;
+
+    [SerializeField] private GameObject eyeEnemyPrefab;
+    private GameObject eyeEnemy;
+
     public GameObject leftExit;
     public GameObject rightExit;
     public GameObject upExit;
@@ -162,12 +166,27 @@ public class RoomScript : MonoBehaviour
         }
     }
 
+
+    public void SpawnEye()
+    {
+        eyeEnemy = Instantiate(eyeEnemyPrefab, Vector3.zero, Quaternion.identity);
+        EyeEnemyScript eye = eyeEnemy.GetComponent<EyeEnemyScript>();
+        eye.Initialise(playerRef, this);
+    }
+
+    public void EyeReady()
+    {
+        roomManager.EyeReady();
+    }
+
+
     //Function for when one of the exits collides with the player
     public void ExitCollided(GameObject exit)
     {
-        ClearEnemies();   
-        
+        ClearEnemies();
+
         //Destroy eye enemy
+        Destroy(eyeEnemy);
 
         if (exit == leftExit)
         {

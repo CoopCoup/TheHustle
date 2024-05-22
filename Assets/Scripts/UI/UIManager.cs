@@ -9,7 +9,7 @@ public class UIManager : MonoBehaviour
     private int score = 0;
     [SerializeField] GameObject HUDRef;
     private HUDScript HUD;
-
+    
     
     public void UpdateUI(int scoreToAdd, bool updateCombo, bool addCombo, int playerLives)
     {
@@ -49,7 +49,10 @@ public class UIManager : MonoBehaviour
 
     }
 
-    
+    public void ResetComboCount()
+    {
+        comboCount = 0;
+    }
 
 
     // Start is called before the first frame update

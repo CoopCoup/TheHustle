@@ -18,10 +18,18 @@ public class RoomManager : MonoBehaviour
     private Vector2 inputVector;
     private int slotsCount = -1;
 
+    [SerializeField] private float eyeTimer;
+    private bool spawningEye = false;
+    private Coroutine eyeCoroutine;
+
+
     private bool slotsTime = false;
     private bool gameOver = false;
 
     public GameObject UIManager;
+    [SerializeField] GameObject menuManager;
+
+
 
     //ref to the slots manager so that we know when they finish up to transition away
     [SerializeField] GameObject slotsManager;
@@ -73,6 +81,16 @@ public class RoomManager : MonoBehaviour
         yield return new WaitForSeconds(3);
         playerScript.MumLetMePlay();
         //playerPaused = false;
+    }
+
+    //Coroutine for spawning eye enemy
+    IEnumerator CEyeCounter()
+    {
+        yield return new WaitForSeconds(eyeTimer);
+        gameTime = false;
+        animator.SetBool("GameTime", false);
+        spawningEye = true;
+        PlayTransition(5);
     }
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -132,6 +150,7 @@ public class RoomManager : MonoBehaviour
         player = Instantiate(playerPrefab, spawnPoints[spawnInt].transform.position, Quaternion.identity);
         playerScript = player.GetComponent<PlayerMovement>();
         playerScript.GetManagerRef(this);
+        UIRef.ResetComboCount();
         if (justPlayedSlots)
         {
             currentRoom.Initialise(this, player.transform, difficultyValue, justPlayedSlots, slotWinnings);
@@ -153,10 +172,14 @@ public class RoomManager : MonoBehaviour
     {
         //Play the transition anim
         //if the player has made it through three rooms without dying, they get to spin the slots
+        if (eyeCoroutine != null)
+        {
+            StopCoroutine(CEyeCounter());
+        }
         if (!firstRoom)
         {
             slotsCount++;
-            if (slotsCount >= 1)
+            if (slotsCount >= 3)
             {
                 slotsTime = true;
                 justPlayedSlots = true;
@@ -341,6 +364,7 @@ public class RoomManager : MonoBehaviour
                 difficultyValue++;
                 NewRoom(1, startingRoom);
             }
+            eyeCoroutine = StartCoroutine(CEyeCounter());
         }
         else
         {
@@ -349,10 +373,35 @@ public class RoomManager : MonoBehaviour
                 //Start the slots
                 StartSlots();
             }
+
+            if (gameOver)
+            {
+                PlayGameOver();
+            }
+
+            if (spawningEye)
+            {
+
+                if (currentRoom != null)
+                {
+                    currentRoom.PauseEnemies();
+                    playerScript.MumSaysNo();
+                    currentRoom.SpawnEye();
+
+                }
+            }
         }
     }
 
-
+    public void EyeReady()
+    {
+        spawningEye = false;
+        animator.SetBool("MoveOn", true);
+        gameTime = true;
+        animator.SetBool("GameTime", true);
+        currentRoom.ResumeEnemies();
+        playerScript.MumSaysNo();
+    }
 
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -375,7 +424,11 @@ public class RoomManager : MonoBehaviour
     public void PlayerHit()
     {
         playerLives--;
-        UIRef.UpdateUI(0, true, false, playerLives);
+        if (eyeCoroutine != null)
+        {
+            StopCoroutine(eyeCoroutine);
+        }
+        UpdateCombo(false);
     }
 
 
@@ -430,7 +483,7 @@ public class RoomManager : MonoBehaviour
     //-----------------------------------------------------------------------------------------------------------------------------------
     //-----------------------------------------------------------------------------------------------------------------------------------
 
-    public void GameOver()
+    private void GameOver()
     {
         slotsTime = false;
         gameTime = false;
@@ -439,7 +492,11 @@ public class RoomManager : MonoBehaviour
     }
 
 
-
+    private void PlayGameOver()
+    {
+        Animator menuAnimator = menuManager.GetComponent<Animator>();
+        menuAnimator.SetBool("GameOver", true);
+    }
 
 
 

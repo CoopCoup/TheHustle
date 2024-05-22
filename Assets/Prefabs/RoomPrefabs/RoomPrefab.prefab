@@ -5097,6 +5097,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 0}
+  eyeEnemyPrefab: {fileID: 7669360085264941120, guid: e3b0b19871d965447836b14f725aeae5, type: 3}
   leftExit: {fileID: 6309377358721049093}
   rightExit: {fileID: 2348116616506923490}
   upExit: {fileID: 5658495316143998819}
@@ -5106,6 +5107,7 @@ MonoBehaviour:
   upExitSeal: {fileID: 8002383502577300221}
   downExitSeal: {fileID: 165795670624305932}
   enemySpawns: []
+  slotSpawns: []
   roomExits: 0
 --- !u!1 &8345896314171931369
 GameObject:

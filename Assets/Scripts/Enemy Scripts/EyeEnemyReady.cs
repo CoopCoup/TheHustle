@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TransitionOver : StateMachineBehaviour
+public class EyeEnemyReady : StateMachineBehaviour
 {
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -35,17 +35,8 @@ public class TransitionOver : StateMachineBehaviour
     //}
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.SetBool("SlotsDone", false);
-        animator.SetBool("MoveOn", false);
-    }
-
-
-
-    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        animator.SetInteger("Direction", 0);
-        GameObject roomManager = animator.gameObject;
-        RoomManager roomManagerScript = roomManager.GetComponent<RoomManager>();
-        roomManagerScript.TransitionDone();
+        GameObject eyeObj = animator.gameObject;
+        EyeEnemyScript eye = eyeObj.GetComponent<EyeEnemyScript>();
+        eye.StartHunting();
     }
 }

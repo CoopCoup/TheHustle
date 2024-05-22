@@ -6393,6 +6393,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 519562619361897697, guid: af6bf3e7e6044ff40adb71cf735f22b8, type: 3}
+  eyeEnemyPrefab: {fileID: 7669360085264941120, guid: e3b0b19871d965447836b14f725aeae5, type: 3}
   leftExit: {fileID: 6309377358721049093}
   rightExit: {fileID: 2348116616506923490}
   upExit: {fileID: 5658495316143998819}
