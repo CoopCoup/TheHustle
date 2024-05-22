@@ -18,6 +18,8 @@ public class RoomManager : MonoBehaviour
     private Vector2 inputVector;
     private int slotsCount = -1;
 
+    private bool mainMenu = true;
+
     [SerializeField] private float eyeTimer;
     private bool spawningEye = false;
     private GameObject eye;
@@ -75,13 +77,24 @@ public class RoomManager : MonoBehaviour
 
     //Debug coroutine for pausing player
     //private bool playerPaused;
-    IEnumerator CDebugPause()
+    IEnumerator CMainMenuDelay()
     {
-        //playerPaused = true;
-        playerScript.MumSaysNo();
+        yield return new WaitForSeconds(8);
+        if (!gameTime)
+        {
+            Animator menuAnimator = menuManager.GetComponent<Animator>();
+            menuAnimator.SetBool("MoveOn", true);
+        }
+    }
+
+    IEnumerator CAttractModeDelay()
+    {
         yield return new WaitForSeconds(3);
-        playerScript.MumLetMePlay();
-        //playerPaused = false;
+        if (!gameTime)
+        {
+            Animator menuAnimator = menuManager.GetComponent<Animator>();
+            menuAnimator.SetBool("MoveOn", true);
+        }
     }
 
     //Coroutine for spawning eye enemy
@@ -128,13 +141,21 @@ public class RoomManager : MonoBehaviour
         spriteRen = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         slots = slotsManager.GetComponent<SlotsScript>();
-        slots.Initialise(this);
-
-        //DELETE AFTER IMPLEMENTING MENU
-        StartGame();
-        
+        slots.Initialise(this);  
     }
 
+   //Enter Main Menu
+   public void MenuStart()
+    {
+        StartCoroutine(CMainMenuDelay());
+    }
+    
+    public void AttractModeStart()
+    {
+        StartCoroutine(CAttractModeDelay());
+    }
+    
+    
     //start the game
     private void StartGame()
     {
