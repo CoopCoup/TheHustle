@@ -20,6 +20,7 @@ public class RoomManager : MonoBehaviour
 
     [SerializeField] private float eyeTimer;
     private bool spawningEye = false;
+    private GameObject eye;
     private Coroutine eyeCoroutine;
 
 
@@ -172,10 +173,11 @@ public class RoomManager : MonoBehaviour
     {
         //Play the transition anim
         //if the player has made it through three rooms without dying, they get to spin the slots
-        if (eyeCoroutine != null)
-        {
-            StopCoroutine(CEyeCounter());
-        }
+
+        //delete any existing eye enemies and stop the coroutine that spawns them
+        Destroy(eye);
+        StopAllCoroutines();
+
         if (!firstRoom)
         {
             slotsCount++;
@@ -371,6 +373,7 @@ public class RoomManager : MonoBehaviour
             if (slotsTime)
             {
                 //Start the slots
+                spawningEye = false;
                 StartSlots();
             }
 
@@ -393,7 +396,7 @@ public class RoomManager : MonoBehaviour
         }
     }
 
-    public void EyeReady()
+    public void EyeReady(GameObject eyeRef)
     {
         spawningEye = false;
         animator.SetBool("MoveOn", true);
@@ -401,6 +404,7 @@ public class RoomManager : MonoBehaviour
         animator.SetBool("GameTime", true);
         currentRoom.ResumeEnemies();
         playerScript.MumSaysNo();
+        eye = eyeRef;
     }
 
 

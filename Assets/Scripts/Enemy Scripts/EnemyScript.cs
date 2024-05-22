@@ -265,10 +265,14 @@ public class EnemyScript : MonoBehaviour, IColliders
             {
                 if (canFire)
                 {
-                    Shoot(direction.normalized);
-                    shootCoroutine = StartCoroutine(CShootCooldown());
-                    wanderCoroutine = StartCoroutine(CPauseWander());
-                    return;
+                    if (!isDead)
+                    {
+                        Shoot(direction.normalized);
+                        shootCoroutine = StartCoroutine(CShootCooldown());
+                        wanderCoroutine = StartCoroutine(CPauseWander());
+                        return;
+                    }
+                    
                 }
                 
                 return; // Exit the loop if player is hit

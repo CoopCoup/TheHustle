@@ -17,7 +17,12 @@ public class EyeEnemyScript : MonoBehaviour
         coll = GetComponent<BoxCollider2D>();
     }
 
-
+    IEnumerator CStartMoveDelay()
+    {
+        yield return new WaitForSeconds(1);
+        immaGetcha = true;
+        coll.enabled = true;
+    }
     public void Initialise(Transform playerRef, RoomScript roomRef)
     {
         player = playerRef;
@@ -26,8 +31,7 @@ public class EyeEnemyScript : MonoBehaviour
 
     public void StartHunting()
     {
-        immaGetcha = true;
-        coll.enabled = true;
+        StartCoroutine(CStartMoveDelay());
         room.EyeReady();
     }
 

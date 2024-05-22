@@ -10,6 +10,7 @@ public class RoomScript : MonoBehaviour
     public GameObject enemyPrefab;
 
     [SerializeField] private GameObject eyeEnemyPrefab;
+    [SerializeField] private GameObject moneyBagPrefab;
     private GameObject eyeEnemy;
 
     public GameObject leftExit;
@@ -26,6 +27,7 @@ public class RoomScript : MonoBehaviour
     [SerializeField] private GameObject[] enemySpawns;
     [SerializeField] private GameObject[] slotSpawns;
     private List<GameObject> enemyInstances = new List<GameObject>();
+    private List<GameObject> bagInstances = new List<GameObject>();
     private int difficultyInt;
     private int difficulty;
 
@@ -84,7 +86,8 @@ public class RoomScript : MonoBehaviour
         {
             if (slotWinnings > 0)
             {
-                //Debug.Log("MoneyPickup Dropped!");
+                GameObject bagInstance = Instantiate(moneyBagPrefab, slotSpawn.transform.position, Quaternion.identity);
+                bagInstances.Add(bagInstance);
                 slotWinnings--;
             }
             else
@@ -176,7 +179,7 @@ public class RoomScript : MonoBehaviour
 
     public void EyeReady()
     {
-        roomManager.EyeReady();
+        roomManager.EyeReady(eyeEnemy);
     }
 
 
@@ -221,6 +224,11 @@ public class RoomScript : MonoBehaviour
         foreach (GameObject enemyInstance in enemyInstances)
         {
             Destroy(enemyInstance);
+        }
+
+        foreach (GameObject bagInstance in bagInstances)
+        {
+            Destroy(bagInstance);
         }
     }
 }

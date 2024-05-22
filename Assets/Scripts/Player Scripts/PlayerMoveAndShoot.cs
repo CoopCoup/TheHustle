@@ -341,5 +341,20 @@ public class PlayerMovement : MonoBehaviour, IColliders
         }
     }
 
-    
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Item"))
+        {
+            roomManager.UpdateScore(10);
+            IColliders i = other.GetComponent<IColliders>();
+            if (i != null)
+            {
+                i.Hit();
+            }
+        }
+    }
+
+
+
 }
