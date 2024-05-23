@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
@@ -9,8 +10,16 @@ public class UIManager : MonoBehaviour
     private int score = 0;
     [SerializeField] GameObject HUDRef;
     private HUDScript HUD;
-    
-    
+
+    //High Score stuff
+    private int HighScore = 10000;
+
+    public void ShowScore(bool destroyHUD)
+    {
+        HUD.UpdateHighScore(score, HighScore, destroyHUD);
+    }
+
+
     public void UpdateUI(int scoreToAdd, bool updateCombo, bool addCombo, int playerLives)
     {
 
@@ -40,6 +49,10 @@ public class UIManager : MonoBehaviour
         }
 
         HUD.UpdateHUD(playerLives, score, combo);
+        if (score > HighScore)
+        {
+            HighScore = score;
+        }
         
     }
 

@@ -14,11 +14,15 @@ public class RoomManager : MonoBehaviour
     private RoomScript currentRoom;
 
     // Player/Game mode variables
-    private int playerLives = 3;
+    private int playerLives = 1;
     private Vector2 inputVector;
     private int slotsCount = -1;
 
     private bool mainMenu = true;
+    private bool gameOverRestart = true;
+
+
+
 
     [SerializeField] private float eyeTimer;
     private bool spawningEye = false;
@@ -101,6 +105,30 @@ public class RoomManager : MonoBehaviour
         }
     }
 
+    IEnumerator CHighScoreScreenDelay()
+    {
+        yield return new WaitForSeconds(5);
+        if (!gameTime)
+        {
+            PlayTransition(2);
+            animator.SetBool("MoveOn", true);
+        }
+    }
+
+
+    //Coroutine for the time where the player has died and they can insert a coin in order to
+    IEnumerator CGameOverDelay()
+    {
+        yield return new WaitForSeconds(5);
+        if (!gameTime)
+        {
+            PlayTransition(2);
+            gameOver = false;
+            animator.SetBool("MoveOn", true);
+        }
+    }
+
+
     //Coroutine for spawning eye enemy
     IEnumerator CEyeCounter()
     {
@@ -142,6 +170,18 @@ public class RoomManager : MonoBehaviour
                 }
             }
         }
+        else
+        {
+            if (gameOver)
+            {
+                if (gameOverRestart)
+                {
+                    gameOver = false;
+                    playerLives = 3;
+                    StartGame();
+                }
+            }
+        }
     }
 
 
@@ -169,9 +209,17 @@ public class RoomManager : MonoBehaviour
     {
         StartCoroutine(CMainMenuDelay());
         spriteRen.sortingLayerName = "Eyes";
-        spriteRen.sortingOrder = 1;
+        spriteRen.sortingOrder = 2;
     }
     
+    //update High Score Table
+    public void UpdateHighScore(bool destroyText)
+    {
+        UIRef.ShowScore(destroyText);
+        StartCoroutine(CHighScoreScreenDelay());
+    }
+
+
     public void AttractModeStart()
     {
         StartCoroutine(CAttractModeDelay());
@@ -183,8 +231,8 @@ public class RoomManager : MonoBehaviour
 
     //start the game
     private void StartGame()
-    {
-            StopAllCoroutines();
+    {   
+        StopAllCoroutines();
             startingGame = true;
             gameTime = true;
             animator.SetBool("GameTime", true);
@@ -352,6 +400,7 @@ public class RoomManager : MonoBehaviour
     public void PlayTransition(int CardinalDirection)
     {
         transitioning = true;
+        gameOverRestart = false;
         switch (CardinalDirection)
         {
             case 1:
@@ -404,6 +453,7 @@ public class RoomManager : MonoBehaviour
     //Make the room swap happen AFTER the transition starts so that it isnt jarring
     public void TransitionMidway()
     {
+        gameOverRestart = true;
         if (gameTime)
         {
             if (startingGame)
@@ -516,8 +566,12 @@ public class RoomManager : MonoBehaviour
     {
         if (playerLives <= 0)
         {
+            if (currentRoom != null)
+            {
+                currentRoom.ClearEnemies();
+            }
             GameOver();
-            ResetLevel();
+            PlayTransition(5);
         }
         else
         {
@@ -572,6 +626,7 @@ public class RoomManager : MonoBehaviour
     {
         Animator menuAnimator = menuManager.GetComponent<Animator>();
         menuAnimator.SetBool("GameOver", true);
+        StartCoroutine(CGameOverDelay());
     }
 
 

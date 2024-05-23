@@ -1,14 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
-public class StartAttractMode : StateMachineBehaviour
+public class GameOver : StateMachineBehaviour
 {
-    private GameObject menuRef;
-    private GameObject roomRef;
-    private RoomManager roomManager;
-    
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     //{
@@ -39,12 +34,5 @@ public class StartAttractMode : StateMachineBehaviour
     //    // Implement code that sets up animation IK (inverse kinematics)
     //}
 
-    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        menuRef = animator.gameObject;
-        roomRef = menuRef.transform.parent.gameObject;
-        roomManager = roomRef.GetComponent<RoomManager>();
-        roomManager.AttractModeStart();
-
-    }
+    
 }

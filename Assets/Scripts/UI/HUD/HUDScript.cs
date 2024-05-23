@@ -12,6 +12,8 @@ public class HUDScript : MonoBehaviour
     [SerializeField] private GameObject heart3;
 
     [SerializeField] private TMPro.TextMeshProUGUI scoreCombo;
+    [SerializeField] private TMPro.TextMeshProUGUI playerScore;
+    [SerializeField] private TMPro.TextMeshProUGUI highScore;
 
     // Start is called before the first frame update
     void Start()
@@ -64,7 +66,19 @@ public class HUDScript : MonoBehaviour
         scoreCombo.text = score.ToString() + "  X" + combo.ToString();
     }
 
-
+    public void UpdateHighScore(int playerScoreRef, int highScoreRef, bool destroy)
+    {
+        if (destroy)
+        {
+            playerScore.text = "";
+            highScore.text = "";
+        }
+        else
+        {
+            playerScore.text = "$" + playerScoreRef.ToString();
+            highScore.text = "$" + highScoreRef.ToString();
+        }
+    }
 
 
 

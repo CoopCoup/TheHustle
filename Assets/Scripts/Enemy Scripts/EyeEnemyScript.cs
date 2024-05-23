@@ -44,6 +44,7 @@ public class EyeEnemyScript : MonoBehaviour
             if (i != null)
             {
                 i.Hit();
+                Destroy(gameObject);
             }
         }
     }

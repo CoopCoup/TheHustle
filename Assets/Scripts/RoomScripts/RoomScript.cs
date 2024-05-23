@@ -187,7 +187,6 @@ public class RoomScript : MonoBehaviour
     public void ExitCollided(GameObject exit)
     {
         ClearEnemies();
-
         //Destroy eye enemy
         Destroy(eyeEnemy);
 
