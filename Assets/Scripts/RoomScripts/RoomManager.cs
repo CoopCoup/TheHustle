@@ -72,28 +72,37 @@ public class RoomManager : MonoBehaviour
     //Increase the difficulty value each time you enter a new room. 
     private int difficultyValue = 2;
 
-
+    private bool transitioning = false;
+    private bool coinInserted = false;
 
 
     //Debug coroutine for pausing player
     //private bool playerPaused;
     IEnumerator CMainMenuDelay()
     {
-        yield return new WaitForSeconds(8);
+        yield return new WaitForSeconds(12);
         if (!gameTime)
         {
-            Animator menuAnimator = menuManager.GetComponent<Animator>();
-            menuAnimator.SetBool("MoveOn", true);
+            PlayTransition(2);
+            animator.SetBool("MoveOn", true);
+            
         }
     }
 
     IEnumerator CAttractModeDelay()
     {
+        if (coinInserted)
+        {
+            StartGame();
+            coinInserted = false;
+        }
         yield return new WaitForSeconds(3);
+        
         if (!gameTime)
         {
-            Animator menuAnimator = menuManager.GetComponent<Animator>();
-            menuAnimator.SetBool("MoveOn", true);
+            PlayTransition(2);
+            animator.SetBool("MoveOn", true);
+            
         }
     }
 
@@ -125,6 +134,25 @@ public class RoomManager : MonoBehaviour
         }
     }
 
+    public void OnFire(InputAction.CallbackContext context)
+    {
+        if (mainMenu)
+        {
+            if (!gameTime)
+            {
+                if (!transitioning)
+                {
+                    StartGame();
+                }
+                else
+                {
+                    coinInserted = true;
+                }
+            }
+        }
+    }
+
+
     public void SlotReadyToPull()
     {
         slotReadyToPull = true;
@@ -148,6 +176,8 @@ public class RoomManager : MonoBehaviour
    public void MenuStart()
     {
         StartCoroutine(CMainMenuDelay());
+        spriteRen.sortingLayerName = "Eyes";
+        spriteRen.sortingOrder = 1;
     }
     
     public void AttractModeStart()
@@ -159,10 +189,15 @@ public class RoomManager : MonoBehaviour
     //start the game
     private void StartGame()
     {
+        StopAllCoroutines();
+        PlayTransition(5);
+        Animator menuAnimator = menuManager.GetComponent<Animator>();
+        menuAnimator.SetBool("Blank", true);
         gameTime = true;
         animator.SetBool("GameTime", true);
         spawnInt = 0;
-
+        spriteRen.sortingLayerName = "Transitions";
+        spriteRen.sortingOrder = 1;
         TransitionRoom(true);
     }
 
@@ -324,6 +359,7 @@ public class RoomManager : MonoBehaviour
     //function to play a room transition
     public void PlayTransition(int CardinalDirection)
     {
+        transitioning = true;
         switch (CardinalDirection)
         {
             case 1:
@@ -353,6 +389,7 @@ public class RoomManager : MonoBehaviour
     //Function triggers when the inverse transition anim is finished- meaning its time to enable all the enemies and player
     public void TransitionDone()
     {
+        transitioning = false;
         if (gameTime)
         {
             playerScript.MumLetMePlay();
@@ -413,6 +450,12 @@ public class RoomManager : MonoBehaviour
                     currentRoom.SpawnEye();
 
                 }
+            }
+
+            if (mainMenu)
+            {
+                Animator menuAnimator = menuManager.GetComponent<Animator>();
+                menuAnimator.SetBool("MoveOn", true);
             }
         }
     }

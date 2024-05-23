@@ -1669,7 +1669,19 @@ MonoBehaviour:
     m_ActionId: 9a3246f9-5924-4e96-8e2b-08743ecb6543
     m_ActionName: Keyboard/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d,/XInputControllerWindows/leftStick]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1531866403}
+        m_TargetAssemblyTypeName: RoomManager, Assembly-CSharp
+        m_MethodName: OnFire
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: ccb56741-e62d-4239-9842-27c672789007
     m_ActionName: Keyboard/Fire[/Keyboard/space,/Mouse/leftButton]
   m_NeverAutoSwitchControlSchemes: 0
