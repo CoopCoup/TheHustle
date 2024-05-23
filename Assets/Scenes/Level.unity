@@ -1520,7 +1520,7 @@ MonoBehaviour:
   roomPrefabs:
   - {fileID: 8227689054583158014, guid: 0d8ca0d24724c51469b29d68bd83a8b7, type: 3}
   - {fileID: 8227689054583158014, guid: 6d3fb69f4ef2fb744a28442b2a12e24c, type: 3}
-  eyeTimer: 10
+  eyeTimer: 20
   UIManager: {fileID: 1985072357}
   menuManager: {fileID: 296357432}
   slotsManager: {fileID: 644157466}

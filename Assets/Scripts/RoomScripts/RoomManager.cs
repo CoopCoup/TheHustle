@@ -73,7 +73,7 @@ public class RoomManager : MonoBehaviour
     private int difficultyValue = 2;
 
     private bool transitioning = false;
-    private bool coinInserted = false;
+    private bool startingGame = false;
 
 
     //Debug coroutine for pausing player
@@ -91,11 +91,6 @@ public class RoomManager : MonoBehaviour
 
     IEnumerator CAttractModeDelay()
     {
-        if (coinInserted)
-        {
-            StartGame();
-            coinInserted = false;
-        }
         yield return new WaitForSeconds(3);
         
         if (!gameTime)
@@ -142,11 +137,8 @@ public class RoomManager : MonoBehaviour
             {
                 if (!transitioning)
                 {
+                    mainMenu = false;
                     StartGame();
-                }
-                else
-                {
-                    coinInserted = true;
                 }
             }
         }
@@ -185,20 +177,20 @@ public class RoomManager : MonoBehaviour
         StartCoroutine(CAttractModeDelay());
     }
     
-    
+    //Make sure that the transition has started before we start the game so leaving the main menu isnt jarring
+
+
+
     //start the game
     private void StartGame()
     {
-        StopAllCoroutines();
-        PlayTransition(5);
-        Animator menuAnimator = menuManager.GetComponent<Animator>();
-        menuAnimator.SetBool("Blank", true);
-        gameTime = true;
-        animator.SetBool("GameTime", true);
-        spawnInt = 0;
-        spriteRen.sortingLayerName = "Transitions";
-        spriteRen.sortingOrder = 1;
-        TransitionRoom(true);
+            StopAllCoroutines();
+            startingGame = true;
+            gameTime = true;
+            animator.SetBool("GameTime", true);
+            spawnInt = 0;
+            TransitionRoom(true);
+
     }
 
     //Spawns the player. duh
@@ -392,6 +384,13 @@ public class RoomManager : MonoBehaviour
         transitioning = false;
         if (gameTime)
         {
+            if (startingGame)
+            {
+                startingGame = false;
+                spriteRen.sortingLayerName = "Transitions";
+                spriteRen.sortingOrder = 1;
+            }
+
             playerScript.MumLetMePlay();
             if (currentRoom != null)
             {
@@ -407,6 +406,13 @@ public class RoomManager : MonoBehaviour
     {
         if (gameTime)
         {
+            if (startingGame)
+            {
+                Animator menuAnimator = menuManager.GetComponent<Animator>();
+                menuAnimator.SetBool("Blank", true);
+                
+            }
+            
             //destroy the player so they can't do whatever while the screen is transitioning
             if (player != null)
             {
@@ -457,6 +463,8 @@ public class RoomManager : MonoBehaviour
                 Animator menuAnimator = menuManager.GetComponent<Animator>();
                 menuAnimator.SetBool("MoveOn", true);
             }
+
+            
         }
     }
 
