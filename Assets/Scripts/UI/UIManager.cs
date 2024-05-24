@@ -13,7 +13,7 @@ public class UIManager : MonoBehaviour
     private HUDScript HUD;
 
     //High Score stuff
-    private int HighScore = 10000;
+    private int HighScore = 666;
 
 
 
