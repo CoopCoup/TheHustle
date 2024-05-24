@@ -6,7 +6,8 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 {
     private int comboCount = 0;
-    private int combo = 0;
+    private SoundManager soundManager;
+    private int combo = 1;
     private int score = 0;
     [SerializeField] GameObject HUDRef;
     private HUDScript HUD;
@@ -14,9 +15,20 @@ public class UIManager : MonoBehaviour
     //High Score stuff
     private int HighScore = 10000;
 
+
+
+    private void Awake()
+    {
+        soundManager = FindObjectOfType<SoundManager>();
+    }
+
+
+
+
     public void ShowScore(bool destroyHUD)
     {
         HUD.UpdateHighScore(score, HighScore, destroyHUD);
+        WipeScore();
     }
 
 
@@ -38,7 +50,7 @@ public class UIManager : MonoBehaviour
             else
             {
                 score = (score * combo);
-                combo = 0;
+                combo = 1;
             }
         }
           
@@ -46,6 +58,7 @@ public class UIManager : MonoBehaviour
         if (scoreToAdd != 0)
         {
             score += scoreToAdd;
+            soundManager.PlaySound("Cash");
         }
 
         HUD.UpdateHUD(playerLives, score, combo);
@@ -54,6 +67,12 @@ public class UIManager : MonoBehaviour
             HighScore = score;
         }
         
+    }
+
+    public void WipeScore()
+    {
+        score = 0;
+        combo = 1;
     }
 
 

@@ -12,6 +12,7 @@ public class RoomManager : MonoBehaviour
     //Get a reference to the current room
     public GameObject[] roomPrefabs;
     private RoomScript currentRoom;
+    private SoundManager soundManager;
 
     // Player/Game mode variables
     private int playerLives = 1;
@@ -80,6 +81,14 @@ public class RoomManager : MonoBehaviour
     private bool startingGame = false;
 
 
+
+    private void Awake()
+    {
+        soundManager = FindObjectOfType<SoundManager>();
+    }
+
+
+
     //Debug coroutine for pausing player
     //private bool playerPaused;
     IEnumerator CMainMenuDelay()
@@ -124,6 +133,8 @@ public class RoomManager : MonoBehaviour
         {
             PlayTransition(2);
             gameOver = false;
+            Animator menuAnimator = menuManager.GetComponent<Animator>();
+            menuAnimator.SetBool("MoveOn", true);
             animator.SetBool("MoveOn", true);
         }
     }
@@ -178,7 +189,21 @@ public class RoomManager : MonoBehaviour
                 {
                     gameOver = false;
                     playerLives = 3;
-                    StartGame();
+                    UIRef.UpdateUI(0, false, false, playerLives);
+                    UpdateHighScore(true);
+                    if (player != null)
+                    {
+                        Destroy(player);
+                    }
+
+                    NewRoom(0, startingRoom);
+                    Animator menuAnimator = menuManager.GetComponent<Animator>();
+                    menuAnimator.SetBool("Blank", true);
+
+                    gameTime = true;
+                    animator.SetBool("GameTime", true);
+                    spawnInt = 0;
+                    soundManager.ResumeLoopingSound();
                 }
             }
         }
@@ -207,6 +232,9 @@ public class RoomManager : MonoBehaviour
    //Enter Main Menu
    public void MenuStart()
     {
+        soundManager.PlayLoopingSound();
+        playerLives = 3;
+        UIRef.UpdateUI(0, false, false, playerLives);
         StartCoroutine(CMainMenuDelay());
         spriteRen.sortingLayerName = "Eyes";
         spriteRen.sortingOrder = 2;
@@ -215,19 +243,22 @@ public class RoomManager : MonoBehaviour
     //update High Score Table
     public void UpdateHighScore(bool destroyText)
     {
+        playerLives = 3;
+        UIRef.UpdateUI(0, false, false, playerLives);
         UIRef.ShowScore(destroyText);
         StartCoroutine(CHighScoreScreenDelay());
     }
 
+    public void SetmenuBool()
+    {
+        mainMenu = true;
+    }
 
     public void AttractModeStart()
     {
         StartCoroutine(CAttractModeDelay());
     }
     
-    //Make sure that the transition has started before we start the game so leaving the main menu isnt jarring
-
-
 
     //start the game
     private void StartGame()
@@ -439,8 +470,8 @@ public class RoomManager : MonoBehaviour
                 spriteRen.sortingLayerName = "Transitions";
                 spriteRen.sortingOrder = 1;
             }
-
             playerScript.MumLetMePlay();
+            soundManager.ResumeLoopingSound();
             if (currentRoom != null)
             {
                 currentRoom.ResumeEnemies();
@@ -458,6 +489,7 @@ public class RoomManager : MonoBehaviour
         {
             if (startingGame)
             {
+
                 Animator menuAnimator = menuManager.GetComponent<Animator>();
                 menuAnimator.SetBool("Blank", true);
                 
@@ -476,9 +508,9 @@ public class RoomManager : MonoBehaviour
             }
             else
             {
-                //IMPORTANT - SWITCH THIS OUT FOR RANDOM ROOM FUCNTION WHEN ITS MADE
                 difficultyValue++;
-                NewRoom(1, startingRoom);
+                int newRoomIndex = UnityEngine.Random.Range(1, roomPrefabs.Length); 
+                NewRoom(newRoomIndex, startingRoom);
             }
             eyeCoroutine = StartCoroutine(CEyeCounter());
         }
@@ -498,9 +530,9 @@ public class RoomManager : MonoBehaviour
 
             if (spawningEye)
             {
-
                 if (currentRoom != null)
                 {
+                    soundManager.PauseLoopingSound();
                     currentRoom.PauseEnemies();
                     playerScript.MumSaysNo();
                     currentRoom.SpawnEye();
@@ -510,6 +542,7 @@ public class RoomManager : MonoBehaviour
 
             if (mainMenu)
             {
+                Debug.Log("MainMenu");
                 Animator menuAnimator = menuManager.GetComponent<Animator>();
                 menuAnimator.SetBool("MoveOn", true);
             }
@@ -520,6 +553,7 @@ public class RoomManager : MonoBehaviour
 
     public void EyeReady(GameObject eyeRef)
     {
+       
         spawningEye = false;
         animator.SetBool("MoveOn", true);
         gameTime = true;
@@ -624,6 +658,7 @@ public class RoomManager : MonoBehaviour
 
     private void PlayGameOver()
     {
+        soundManager.PauseLoopingSound();
         Animator menuAnimator = menuManager.GetComponent<Animator>();
         menuAnimator.SetBool("GameOver", true);
         StartCoroutine(CGameOverDelay());

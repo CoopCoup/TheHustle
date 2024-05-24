@@ -6,15 +6,24 @@ public class EyeEnemyScript : MonoBehaviour
 {
 
     private Transform player;
+    private SoundManager soundManager;
     private RoomScript room;
     private bool immaGetcha;
     [SerializeField] float speed;
     private BoxCollider2D coll;
 
+
+    private void Awake()
+    {
+        soundManager = FindObjectOfType<SoundManager>();
+    }
+
+
     // Start is called before the first frame update
     void Start()
     {
         coll = GetComponent<BoxCollider2D>();
+        soundManager.PlaySound("EyeSpawn");
     }
 
     IEnumerator CStartMoveDelay()

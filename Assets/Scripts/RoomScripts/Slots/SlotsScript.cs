@@ -5,6 +5,7 @@ using UnityEngine;
 public class SlotsScript : MonoBehaviour
 {
    private RoomManager roomManager;
+    private SoundManager soundManager;
 
     [SerializeField] private GameObject EyeL;
     [SerializeField] private GameObject EyeC;
@@ -25,7 +26,13 @@ public class SlotsScript : MonoBehaviour
 
     private int slotsCount = 0;
 
-   
+
+    private void Awake()
+    {
+        soundManager = FindObjectOfType<SoundManager>();
+    }
+
+
     //coroutine when the slots are done 
     IEnumerator CSlotsFinished()
     {
@@ -114,6 +121,7 @@ public class SlotsScript : MonoBehaviour
     public void PullSlots()
     {
         JAnimator.SetBool("Pull", true);
+        soundManager.PlaySound("Roulette");
     }
 
     public void SlotsFinished()

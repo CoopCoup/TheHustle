@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour, IColliders
 {
     //create our variables
+    private SoundManager soundManager;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRen;
     private Collider2D playerCol;
@@ -48,6 +48,7 @@ public class PlayerMovement : MonoBehaviour, IColliders
         GameObject newBullet = Instantiate(bulletPrefab);
         BulletScript bulletLogic = newBullet.GetComponent<BulletScript>();
         bulletLogic.Instantiate(direction, firingPoint.transform.position);
+        soundManager.PlaySound("PlayerShoot");
         yield return new WaitForSeconds(.25f);
         animator.SetBool("IsFiring", false);
 
@@ -91,6 +92,8 @@ public class PlayerMovement : MonoBehaviour, IColliders
 
     private void Start()
     {
+        soundManager = FindObjectOfType<SoundManager>();
+        
         //Set the initial direction the player is facing
         direction = Direction.Right;
         inputX = 1;
@@ -110,6 +113,7 @@ public class PlayerMovement : MonoBehaviour, IColliders
     {
         if (!isPaused)
         {
+            soundManager.PlaySound("PlayerDeath");
             MumSaysNo();
             roomManager.PlayerHit();
             animator.SetBool("Hit", true);

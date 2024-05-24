@@ -8,6 +8,7 @@ using UnityEngine;
 public class EnemyScript : MonoBehaviour, IColliders
 {
     public GameObject bulletPrefab;
+    private SoundManager soundManager;
     private Transform player;
     private Animator animator;
     private Collider2D lilCollider;
@@ -86,6 +87,13 @@ public class EnemyScript : MonoBehaviour, IColliders
         yield return new WaitForSeconds(2f);
         canFire = true;
     }
+
+
+    private void Awake()
+    {
+           soundManager = FindObjectOfType<SoundManager>();
+    }
+
 
 
     //Initialise the enemy in the room script, passing it a reference to the player
@@ -286,6 +294,7 @@ public class EnemyScript : MonoBehaviour, IColliders
     private void Shoot(Vector2 direction)
     {
         GameObject bulletInstance = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+        soundManager.PlaySound("EnemyShoot");
         EnemyBulletScript bulletRef = bulletInstance.GetComponent<EnemyBulletScript>();
         bulletRef.Initialise(direction);
         bullets.Add(bulletInstance);
